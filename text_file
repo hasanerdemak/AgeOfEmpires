@@ -1,0 +1,84 @@
+isGameOver: false
+
+playerCount: 2
+
+----------------------------------------
+Player 1
+playerID: 0
+wood: 90
+gold: 54
+stone: 105
+towerIDCounter: 0
+workerIDCounter: 1
+archerIDCounter: 0
+swordmanIDCounter: 0
+spearmanIDCounter: 0
+cavalryIDCounter: 0
+catapultIDCounter: 0
+infantryTrainingCount: 0
+cavalryTrainingCount: 0
+catapultTrainingCount: 0
+
+itemCount: 3
+
+Item 1
+itemType: MainBuilding
+itemID: 0
+x: 1
+y: 1
+lifePoints: 100
+
+Item 2
+itemType: University
+itemID: 0
+x: 1
+y: 2
+lifePoints: 30
+
+Item 3
+itemType: Worker
+itemID: 0
+x: 1
+y: 2
+lifePoints: 2
+
+----------------------------------------
+Player 2
+playerID: 1
+wood: 117
+gold: 94
+stone: 110
+towerIDCounter: 0
+workerIDCounter: 1
+archerIDCounter: 0
+swordmanIDCounter: 0
+spearmanIDCounter: 0
+cavalryIDCounter: 1
+catapultIDCounter: 0
+infantryTrainingCount: 0
+cavalryTrainingCount: 0
+catapultTrainingCount: 0
+
+itemCount: 3
+
+Item 1
+itemType: MainBuilding
+itemID: 0
+x: 100
+y: 50
+lifePoints: 100
+
+Item 2
+itemType: Worker
+itemID: 0
+x: 100
+y: 50
+lifePoints: 2
+
+Item 3
+itemType: Cavalry
+itemID: 0
+x: 95
+y: 46
+lifePoints: 20
+
