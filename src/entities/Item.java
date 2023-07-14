@@ -22,7 +22,7 @@ public abstract class Item implements ItemInterface {
         this.ownerPlayer = ownerPlayer;
         setX(x);
         setY(y);
-        this.lifePoints = lifePoints;
+        setLifePoints(lifePoints);
         this.cost = cost;
     }
 
@@ -49,17 +49,22 @@ public abstract class Item implements ItemInterface {
         return x;
     }
 
-    @Override
-    public int getY() {
-        System.out.println(y);
-        return y;
-    }
-
     public void setX(int x) throws AgeOfEmpiresException {
         if (x < 1 || x > 100) {
             throw new AgeOfEmpiresException("x must be in range 1-100");
         }
         this.x = x;
+    }
+
+    @Override
+    public int getX_WithoutPrinting() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        System.out.println(y);
+        return y;
     }
 
     public void setY(int y) throws AgeOfEmpiresException {
@@ -70,6 +75,11 @@ public abstract class Item implements ItemInterface {
     }
 
     @Override
+    public int getY_WithoutPrinting() {
+        return y;
+    }
+
+    @Override
     public int getLifePoints() {
         System.out.println(lifePoints);
         return lifePoints;
@@ -77,6 +87,11 @@ public abstract class Item implements ItemInterface {
 
     public void setLifePoints(int lifePoints) {
         this.lifePoints = lifePoints;
+    }
+
+    @Override
+    public int getLifePoints_WithoutPrinting() {
+        return lifePoints;
     }
 
     public Resources getCost() {
@@ -93,7 +108,7 @@ public abstract class Item implements ItemInterface {
 
     @Override
     public boolean checkIfAlive() {
-        if (getLifePoints() <= 0) {
+        if (getLifePoints_WithoutPrinting() <= 0) {
             ownerPlayer.getCurrentGame().getMap().getMapItems().remove(this);
             return false;
         }
@@ -102,7 +117,7 @@ public abstract class Item implements ItemInterface {
 
     @Override
     public String print_message() {
-        String message = this + "\t->\tSymbol: " + getSymbol() + "\tx: " + getX() + "\ty: " + getY() + "\tlife points: " + getLifePoints();
+        String message = this + "\t->\tSymbol: " + getSymbol() + "\tx: " + getX_WithoutPrinting() + "\ty: " + getY_WithoutPrinting() + "\tlife points: " + getLifePoints_WithoutPrinting();
         System.out.println(message);
         return message;
     }

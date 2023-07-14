@@ -1,7 +1,10 @@
 package entities;
 
 import abstracts.WorkerInterface;
-import concretes.*;
+import concretes.MoveControlUtils;
+import concretes.Player;
+import concretes.Resources;
+import concretes.ResourcesUtils;
 import exceptions.AgeOfEmpiresException;
 
 public class Worker extends Human implements WorkerInterface {
@@ -31,7 +34,7 @@ public class Worker extends Human implements WorkerInterface {
     public void build(Building b) throws AgeOfEmpiresException {
 
         // Check default conditions required to make a move
-        MoveUtils.checkMoveConditions(getOwnerPlayer());
+        MoveControlUtils.checkMoveConditions(getOwnerPlayer());
 
         if (b == null) {
             throw new AgeOfEmpiresException(this + " -> build function's parameter cannot be null");
@@ -39,7 +42,7 @@ public class Worker extends Human implements WorkerInterface {
         if (b instanceof MainBuilding) {
             throw new AgeOfEmpiresException(this + " can only build University or Tower");
         }
-        if (getOwnerPlayer().getCurrentGame().getMap().getItemAtCoordinates(getX(), getY()) instanceof Building) {
+        if (getOwnerPlayer().getCurrentGame().getMap().getItemAtCoordinates(getX_WithoutPrinting(), getY_WithoutPrinting()) instanceof Building) {
             throw new AgeOfEmpiresException(this + " -> coordinates the worker is on are not empty. There is another building.");
         }
 
@@ -58,8 +61,8 @@ public class Worker extends Human implements WorkerInterface {
 
             ResourcesUtils.deductResources(ownerPlayer, itemCost);
 
-            b.setX(getX());
-            b.setY(getY());
+            b.setX(getX_WithoutPrinting());
+            b.setY(getY_WithoutPrinting());
         } else {
             throw new AgeOfEmpiresException(this + " cannot build the " + b);
         }

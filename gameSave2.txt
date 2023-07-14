@@ -5,14 +5,14 @@ playerCount: 2
 
 ----------------------------------------
 Player 1
-playerID: 0
-wood: 90
-gold: 54
-stone: 105
+playerID: 1
+wood: 518
+gold: 182
+stone: 310
 towerIDCounter: 0
 workerIDCounter: 1
 archerIDCounter: 0
-swordmanIDCounter: 0
+swordmanIDCounter: 1
 spearmanIDCounter: 0
 cavalryIDCounter: 0
 catapultIDCounter: 0
@@ -25,30 +25,30 @@ itemCount: 3
 Item 1
 itemType: MainBuilding
 itemID: 0
-x: 1
-y: 1
+x: 100
+y: 50
 lifePoints: 100
 
 Item 2
-itemType: University
-itemID: 0
-x: 1
-y: 2
-lifePoints: 30
-
-Item 3
 itemType: Worker
 itemID: 0
-x: 1
-y: 2
+x: 100
+y: 50
 lifePoints: 2
+
+Item 3
+itemType: Swordman
+itemID: 0
+x: 99
+y: 49
+lifePoints: 5
 
 ----------------------------------------
 Player 2
-playerID: 1
-wood: 117
-gold: 94
-stone: 110
+playerID: 2
+wood: 487
+gold: 24
+stone: 305
 towerIDCounter: 0
 workerIDCounter: 1
 archerIDCounter: 0
@@ -57,29 +57,36 @@ spearmanIDCounter: 0
 cavalryIDCounter: 1
 catapultIDCounter: 0
 infantryTrainingCount: 0
-cavalryTrainingCount: 0
+cavalryTrainingCount: 2
 catapultTrainingCount: 0
 
-itemCount: 3
+itemCount: 4
 
 Item 1
 itemType: MainBuilding
 itemID: 0
-x: 100
+x: 1
 y: 50
 lifePoints: 100
 
 Item 2
+itemType: University
+itemID: 0
+x: 2
+y: 50
+lifePoints: 30
+
+Item 3
 itemType: Worker
 itemID: 0
-x: 100
+x: 2
 y: 50
 lifePoints: 2
 
-Item 3
+Item 4
 itemType: Cavalry
 itemID: 0
-x: 95
-y: 46
-lifePoints: 20
+x: 2
+y: 2
+lifePoints: 22
 

@@ -67,7 +67,7 @@ public class Archer extends Soldier {
     }
 
     private void chooseWeapon(int x, int y) {
-        if (Math.abs(this.getX() - x) == 1 || Math.abs(this.getY() - y) == 1) {
+        if (Math.abs(this.getX_WithoutPrinting() - x) == 1 || Math.abs(this.getY_WithoutPrinting() - y) == 1) {
             currentWeapon = Weapon.SWORD;
         } else {
             currentWeapon = Weapon.BOW;

@@ -8,11 +8,11 @@ import entities.Item;
 import entities.MainBuilding;
 import exceptions.AgeOfEmpiresException;
 
-public class MoveUtils {
+public class MoveControlUtils {
 
     public static void checkMoveConditions(Player player) throws AgeOfEmpiresException {
         // Check if the game is already over
-        if (player.getCurrentGame().isGameOver) {
+        if (player.getCurrentGame().getGameOver()) {
             throw new AgeOfEmpiresException("The game is already over. " + player + " cannot make a move.");
         }
         // Check if it is the player's turn
@@ -21,12 +21,12 @@ public class MoveUtils {
         }
     }
 
-    public static <T extends ItemInterface & AttackableInterface> void checkCoordinates(ItemInterface callerItem, int x, int y, String moveName) throws AgeOfEmpiresException {
+    public static <T extends ItemInterface & AttackableInterface> void checkCoordinates(T callerItem, int x, int y, String moveName) throws AgeOfEmpiresException {
         if (x < 1 || x > 100 || y < 1 || y > 50) {
             throw new AgeOfEmpiresException(callerItem + " cannot " + moveName + " these coordinates. Indexes are out of range");
         }
 
-        if (x == callerItem.getX() && y == callerItem.getY()) {
+        if (x == callerItem.getX_WithoutPrinting() && y == callerItem.getY_WithoutPrinting()) {
             throw new AgeOfEmpiresException(callerItem + " cannot " + moveName + " its own coordinates");
         }
     }
@@ -34,9 +34,9 @@ public class MoveUtils {
     public static <T extends ItemInterface & AttackableInterface> void checkAttackDistance(T callerItem, int x, int y) throws AgeOfEmpiresException {
         float distance;
         if (callerItem instanceof Catapult) {
-            distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);
+            distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerItem.getX_WithoutPrinting(), callerItem.getY_WithoutPrinting(), x, y);
         } else {
-            distance = DistanceUtils.getEuclideanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);
+            distance = DistanceUtils.getEuclideanDistanceBetweenCoordinates(callerItem.getX_WithoutPrinting(), callerItem.getY_WithoutPrinting(), x, y);
         }
 
         if (distance < callerItem.getLowerAttackDistanceLimit() || distance > callerItem.getUpperAttackDistanceLimit()) {
@@ -58,7 +58,7 @@ public class MoveUtils {
 
 
     public static void checkMoveDistance(Human callerHuman, int x, int y) throws AgeOfEmpiresException {
-        float distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerHuman.getX(), callerHuman.getY(), x, y);
+        float distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerHuman.getX_WithoutPrinting(), callerHuman.getY_WithoutPrinting(), x, y);
         if (distance > callerHuman.getMovementSpeed()) {
             throw new AgeOfEmpiresException(callerHuman + " cannot move to coordinates x: " + x + ", y: " + y + " (Long distance)");
         }

@@ -11,7 +11,8 @@ public class GameSaveManager {
 
     public static GameData createGameData(Game game) throws AgeOfEmpiresException {
         GameData newGameData = new GameData();
-        newGameData.isGameOver = game.isGameOver;
+        newGameData.gameOver = game.getGameOver();
+        newGameData.playerTurnCounter = game.getPlayerTurnCounter();
 
         for (int i = 0; i < game.getPlayerCount(); i++) {
             Player player = game.getPlayer(i);
@@ -24,19 +25,7 @@ public class GameSaveManager {
 
     private static PlayerData createPlayerData(Player player) {
         var idCountersHolder = player.getIdCountersHolder();
-        PlayerData playerData = new PlayerData(
-                player.getPlayerID(),
-                player.getWood(),
-                player.getGold(),
-                player.getStone(),
-                idCountersHolder.towerIDCounter,
-                idCountersHolder.workerIDCounter,
-                idCountersHolder.archerIDCounter,
-                idCountersHolder.swordmanIDCounter,
-                idCountersHolder.spearmanIDCounter,
-                idCountersHolder.cavalryIDCounter,
-                idCountersHolder.catapultIDCounter
-        );
+        PlayerData playerData = new PlayerData(player.getPlayerID(), player.getWood(), player.getGold(), player.getStone(), idCountersHolder.towerIDCounter, idCountersHolder.workerIDCounter, idCountersHolder.archerIDCounter, idCountersHolder.swordmanIDCounter, idCountersHolder.spearmanIDCounter, idCountersHolder.cavalryIDCounter, idCountersHolder.catapultIDCounter);
 
         Building mainBuilding = player.getMainBuilding();
         ItemData mainBuildingData = createItemData(mainBuilding);
@@ -76,20 +65,15 @@ public class GameSaveManager {
     }
 
     private static ItemData createItemData(Item item) {
-        return new ItemData(
-                item.getClass().getSimpleName(),
-                item.getItemID(),
-                item.getX(),
-                item.getY(),
-                item.getLifePoints()
-        );
+        return new ItemData(item.getClass().getSimpleName(), item.getItemID(), item.getX_WithoutPrinting(), item.getY_WithoutPrinting(), item.getLifePoints_WithoutPrinting());
     }
 
     public static void extractGameDataToGame(GameData gameData, Game game) throws AgeOfEmpiresException {
-        game.isGameOver = gameData.isGameOver;
+        game.setGameOver(gameData.gameOver);
+        game.setPlayerTurnCounter(gameData.playerTurnCounter);
         for (int i = 0; i < gameData.playerDataArrayList.size(); i++) {
             var playerData = gameData.playerDataArrayList.get(i);
-            var newPlayer = new Player(i, game, false);
+            var newPlayer = new Player(playerData.playerID, game, false);
             newPlayer.setWood(playerData.wood);
             newPlayer.setGold(playerData.gold);
             newPlayer.setStone(playerData.stone);
@@ -106,93 +90,48 @@ public class GameSaveManager {
             for (var item : playerData.itemDataArrayList) {
                 switch (item.itemType) {
                     case "MainBuilding" -> {
-                        var mainBuilding = new MainBuilding(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var mainBuilding = new MainBuilding(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.setMainBuilding(mainBuilding);
                     }
                     case "University" -> {
-                        var university = new University(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var university = new University(newPlayer, item.x, item.y, item.lifePoints);
                         university.setInfantryTrainingCount(playerData.infantryTrainingCount);
                         university.setCavalryTrainingCount(playerData.cavalryTrainingCount);
                         university.setCatapultTrainingCount(playerData.catapultTrainingCount);
                         newPlayer.setUniversity(university);
                     }
                     case "Tower" -> {
-                        var tower = new Tower(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var tower = new Tower(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.addTower(tower, false);
                         tower.setItemID(item.itemID);
                     }
                     case "Worker" -> {
-                        var worker = new Worker(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var worker = new Worker(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.addWorker(worker, false);
                         worker.setItemID(item.itemID);
                     }
                     case "Archer" -> {
-                        var archer = new Archer(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var archer = new Archer(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.addSoldier(archer, false);
                         archer.setItemID(item.itemID);
                     }
                     case "Swordman" -> {
-                        var swordman = new Swordman(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var swordman = new Swordman(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.addSoldier(swordman, false);
                         swordman.setItemID(item.itemID);
                     }
                     case "Spearman" -> {
-                        var spearman = new Spearman(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var spearman = new Spearman(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.addSoldier(spearman, false);
                         spearman.setItemID(item.itemID);
                     }
                     case "Cavalry" -> {
-                        var cavalry = new Cavalry(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var cavalry = new Cavalry(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.addSoldier(cavalry, false);
                         cavalry.setItemID(item.itemID);
                     }
                     case "Catapult" -> {
-                        var catapult = new Catapult(
-                                newPlayer,
-                                item.x,
-                                item.y,
-                                item.lifePoints
-                        );
+                        var catapult = new Catapult(newPlayer, item.x, item.y, item.lifePoints);
                         newPlayer.addSoldier(catapult, false);
                         catapult.setItemID(item.itemID);
                     }
@@ -208,19 +147,19 @@ public class GameSaveManager {
     public static void saveGameDataToBinaryFile(GameData gameData, String fileName) {
         try (ObjectOutputStream objectOut = new ObjectOutputStream(new FileOutputStream(fileName))) {
             objectOut.writeObject(gameData);
-            System.out.println("Game data saved successfully.");
+            //System.out.println("Game data saved successfully.");
         } catch (IOException e) {
-            System.out.println("Error saving game data: " + e.getMessage());
+            //System.out.println("Error saving game data: " + e.getMessage());
         }
     }
 
     public static GameData loadGameDataFromBinaryFile(String fileName) {
         try (ObjectInputStream objectIn = new ObjectInputStream(new FileInputStream(fileName))) {
             GameData gameData = (GameData) objectIn.readObject();
-            System.out.println("Game data loaded successfully.");
+            //System.out.println("Game data loaded successfully.");
             return gameData;
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error loading game data: " + e.getMessage());
+            //System.out.println("Error loading game data: " + e.getMessage());
             return null;
         }
     }
@@ -228,8 +167,9 @@ public class GameSaveManager {
 
     public static void saveGameDataToTextFile(GameData gameData, String fileName) {
         try (PrintWriter writer = new PrintWriter(fileName)) {
-            // Write isGameOver
-            writer.println("isGameOver: " + gameData.isGameOver);
+            // Write gameOver
+            writer.println("gameOver: " + gameData.gameOver);
+            writer.println("playerTurnCounter: " + gameData.playerTurnCounter);
             writer.println();
 
             // Write player data
@@ -277,9 +217,9 @@ public class GameSaveManager {
                 }
             }
 
-            System.out.println("Game data saved successfully.");
+            //System.out.println("Game data saved successfully.");
         } catch (IOException e) {
-            System.out.println("Error saving game data: " + e.getMessage());
+            //System.out.println("Error saving game data: " + e.getMessage());
         }
     }
 
@@ -287,17 +227,23 @@ public class GameSaveManager {
         try (Scanner scanner = new Scanner(new File(fileName))) {
             GameData gameData = new GameData();
 
-            // Read isGameOver
-            String isGameOverLine = scanner.nextLine();
-            String[] isGameOverParts = isGameOverLine.split(": ");
-            gameData.isGameOver = Boolean.parseBoolean(isGameOverParts[1]);
-            scanner.nextLine(); // Consume empty line
+            // Read gameOver
+            String gameOverLine = scanner.nextLine();
+            String[] gameOverParts = gameOverLine.split(": ");
+            gameData.gameOver = Boolean.parseBoolean(gameOverParts[1]);
+
+            // Read playerTurnCounter
+            String playerTurnCounterLine = scanner.nextLine();
+            String[] playerTurnCounterParts = playerTurnCounterLine.split(": ");
+            gameData.playerTurnCounter = Integer.parseInt(playerTurnCounterParts[1]);
+
+            scanner.nextLine(); // empty line
 
             // Read player data
             String playerCountLine = scanner.nextLine();
             String[] playerCountParts = playerCountLine.split(": ");
             int playerCount = Integer.parseInt(playerCountParts[1]);
-            scanner.nextLine(); // Consume empty line
+            scanner.nextLine(); // empty line
 
             for (int i = 0; i < playerCount; i++) {
                 scanner.nextLine();
@@ -344,10 +290,10 @@ public class GameSaveManager {
                 gameData.playerDataArrayList.add(playerData);
             }
 
-            System.out.println("Game data loaded successfully.");
+            //System.out.println("Game data loaded successfully.");
             return gameData;
         } catch (IOException e) {
-            System.out.println("Error loading game data: " + e.getMessage());
+            //System.out.println("Error loading game data: " + e.getMessage());
             return null;
         }
     }
@@ -355,7 +301,8 @@ public class GameSaveManager {
 }
 
 class GameData implements Serializable {
-    public boolean isGameOver;
+    public boolean gameOver;
+    public int playerTurnCounter;
     public ArrayList<PlayerData> playerDataArrayList = new ArrayList<>();
 }
 
@@ -392,10 +339,7 @@ class PlayerData implements Serializable {
         this.catapultIDCounter = 0;
     }
 
-    public PlayerData(int playerID, int wood, int gold, int stone,
-                      int towerIDCounter, int workerIDCounter,
-                      int archerIDCounter, int swordmanIDCounter, int spearmanIDCounter,
-                      int cavalryIDCounter, int catapultIDCounter) {
+    public PlayerData(int playerID, int wood, int gold, int stone, int towerIDCounter, int workerIDCounter, int archerIDCounter, int swordmanIDCounter, int spearmanIDCounter, int cavalryIDCounter, int catapultIDCounter) {
         this.playerID = playerID;
         this.wood = wood;
         this.gold = gold;

@@ -36,8 +36,8 @@ public class MainBuilding extends Building {
             ResourcesUtils.deductResources(ownerPlayer, itemCost);
 
             human.setOwnerPlayer(ownerPlayer);
-            human.setX(getX());
-            human.setY(getY());
+            human.setX(getX_WithoutPrinting());
+            human.setY(getY_WithoutPrinting());
 
             if (human instanceof Soldier) {
                 ownerPlayer.addSoldier((Soldier) human, true);
@@ -59,7 +59,7 @@ public class MainBuilding extends Building {
         var ownerPlayer = getOwnerPlayer();
         ownerPlayer.setMainBuilding(null);
         ownerPlayer.getCurrentGame().removePlayer(ownerPlayer);
-        System.out.println(ownerPlayer + " lost his Main Building and WAS DEFEATED");
+        //System.out.println(ownerPlayer + " lost his Main Building and WAS DEFEATED");
         return false;
     }
 

@@ -1,7 +1,10 @@
 package entities;
 
 import abstracts.UniversityInterface;
-import concretes.*;
+import concretes.MoveControlUtils;
+import concretes.Player;
+import concretes.Resources;
+import concretes.ResourcesUtils;
 import exceptions.AgeOfEmpiresException;
 
 public class University extends Building implements UniversityInterface {
@@ -65,7 +68,7 @@ public class University extends Building implements UniversityInterface {
 
     private void trainUnit(UnitType unitType) throws AgeOfEmpiresException {
         // Check default conditions required to make a move
-        MoveUtils.checkMoveConditions(getOwnerPlayer());
+        MoveControlUtils.checkMoveConditions(getOwnerPlayer());
 
         var player = getOwnerPlayer();
         var cost = new Resources(0, 50, 0);

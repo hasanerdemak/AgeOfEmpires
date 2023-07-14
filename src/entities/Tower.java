@@ -2,7 +2,8 @@ package entities;
 
 import abstracts.AttackableInterface;
 import abstracts.TowerInterface;
-import concretes.*;
+import concretes.Player;
+import concretes.Resources;
 import exceptions.AgeOfEmpiresException;
 
 public class Tower extends Building implements TowerInterface, AttackableInterface {

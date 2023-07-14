@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Game implements GameInterface {
     private final ArrayList<Player> players;
     private final Map map;
-    public boolean isGameOver = false;
+    private boolean gameOver = false;
     private int playerTurnCounter = 0;
 
     public Game(int playerCount) throws AgeOfEmpiresException {
@@ -89,8 +89,20 @@ public class Game implements GameInterface {
         GameSaveManager.saveGameDataToBinaryFile(gameData, filename);
     }
 
+    public boolean getGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+
     public int getPlayerTurnCounter() {
         return playerTurnCounter;
+    }
+
+    public void setPlayerTurnCounter(int playerTurnCounter) {
+        this.playerTurnCounter = playerTurnCounter;
     }
 
     public void increasePlayerTurnCounter() {
@@ -104,12 +116,12 @@ public class Game implements GameInterface {
 
         // Check game status after a move
         if (players.size() == 1) { // If one player is left, (s)he has won the game
-            isGameOver = true;
-            System.out.println("GAME OVER, " + players.get(0) + " won the game");
+            gameOver = true;
+            //System.out.println("GAME OVER, " + players.get(0) + " won the game");
             System.out.println("Oyun bitti");
         } else if (players.size() == 0) { // If there are no players left, no one has won the game.
-            isGameOver = true;
-            System.out.println("GAME OVER, no one won the game");
+            gameOver = true;
+            //System.out.println("GAME OVER, no one won the game");
         }
     }
 }

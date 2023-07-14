@@ -2,7 +2,7 @@ package entities;
 
 import abstracts.AttackableInterface;
 import abstracts.HumanInterface;
-import concretes.MoveUtils;
+import concretes.MoveControlUtils;
 import concretes.Player;
 import concretes.Resources;
 import exceptions.AgeOfEmpiresException;
@@ -72,10 +72,10 @@ public abstract class Human extends Item implements HumanInterface, AttackableIn
     @Override
     public void move(int x, int y) throws AgeOfEmpiresException {
         // Check default conditions required to make a move
-        MoveUtils.checkMoveConditions(getOwnerPlayer());
-        MoveUtils.checkCoordinates(this, x, y, "move to");
-        MoveUtils.checkMoveDistance(this, x, y);
-        MoveUtils.checkEmptyCoordinates(this, x, y);
+        MoveControlUtils.checkMoveConditions(getOwnerPlayer());
+        MoveControlUtils.checkCoordinates(this, x, y, "move to");
+        MoveControlUtils.checkMoveDistance(this, x, y);
+        MoveControlUtils.checkEmptyCoordinates(this, x, y);
 
         // Go to x,y
         setX(x);

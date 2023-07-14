@@ -10,7 +10,9 @@ public class Main {
     static Game game;
 
     public static void main(String[] args) throws AgeOfEmpiresException {
-        //startGame();
+        startGame();
+
+        /*
 
         Game g = new Game(2); // iki kişilik oyun başlatır
         g.getPlayer(0).getWorker(0).move(1, 2); // İlk oyuncu işçisini hareket ettirir
@@ -32,6 +34,9 @@ public class Main {
         g2.getPlayer(0).getUniversity().trainInfantry();
         // ilk oyuncu iki kez üst üste oynadığı için AgeOfEmpiresException atılmalı
         //g2.getPlayer(0).getUniversity().trainInfantry();
+
+
+         */
     }
 
     public static void startGame() throws AgeOfEmpiresException {
@@ -72,7 +77,7 @@ public class Main {
         }
 
 
-        while (!game.isGameOver) {
+        while (!game.getGameOver()) {
             var currentPlayer = game.getPlayer(game.getPlayerTurnCounter());
             boolean doesMakeMove = false;
             while (!doesMakeMove) {
@@ -341,7 +346,7 @@ public class Main {
                     1- Save Game to a Binary File
                     2- Save Game to a Text File
                     3- Cancel
-                    Choose soldier type to train:\s""");
+                    Choose saving type:\s""");
             int operation = scanner.nextInt();
             if (operation < 1 || operation > 3) {
                 System.out.println("Invalid choice");

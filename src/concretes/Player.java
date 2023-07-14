@@ -37,13 +37,13 @@ public class Player implements PlayerInterface {
         if (isFirstStart) {
             switch (this.playerID) {
                 case 0 -> setMainBuilding(new MainBuilding(this, 1, 1));
-                case 1 -> setMainBuilding(new MainBuilding(this, 100, 50));//new MainBuilding(this, 100, 50);
+                case 1 -> setMainBuilding(new MainBuilding(this, 100, 50));
                 case 2 -> setMainBuilding(new MainBuilding(this, 1, 50));
                 case 3 -> setMainBuilding(new MainBuilding(this, 100, 1));
             }
 
             assert mainBuilding != null;
-            var initialWorker = new Worker(this, mainBuilding.getX(), mainBuilding.getY());
+            var initialWorker = new Worker(this, mainBuilding.getX_WithoutPrinting(), mainBuilding.getY_WithoutPrinting());
             addWorker(initialWorker, true);
         }
     }
@@ -157,7 +157,7 @@ public class Player implements PlayerInterface {
             currentGame.getMap().addMapItem(newTower);
             if (incrementCounter) idCountersHolder.towerIDCounter++;
         } else {
-            System.err.println(this + " -> " + newTower + " has been added before.");
+            //System.err.println(this + " -> " + newTower + " has been added before.");
         }
     }
 
@@ -168,7 +168,7 @@ public class Player implements PlayerInterface {
             currentGame.getMap().addMapItem(newWorker);
             if (incrementCounter) idCountersHolder.workerIDCounter++;
         } else {
-            System.err.println(this + " -> " + newWorker + " has been added before.");
+            //System.err.println(this + " -> " + newWorker + " has been added before.");
         }
     }
 
@@ -178,7 +178,7 @@ public class Player implements PlayerInterface {
             soldiers.add(newSoldier);
             currentGame.getMap().addMapItem(newSoldier);
         } else {
-            System.err.println(this + " -> " + newSoldier + " has been added before.");
+            //System.err.println(this + " -> " + newSoldier + " has been added before.");
         }
     }
 
@@ -218,7 +218,7 @@ public class Player implements PlayerInterface {
     @Override
     public void purchase(Item item) throws AgeOfEmpiresException {
         // Check default conditions required to make a move
-        MoveUtils.checkMoveConditions(this);
+        MoveControlUtils.checkMoveConditions(this);
 
         if (item instanceof Building) {
             throw new AgeOfEmpiresException(this + " -> purchase function cannot take Building. Item sent: " + item);
@@ -239,7 +239,7 @@ public class Player implements PlayerInterface {
 
     @Override
     public void pass() {
-        System.out.println(this + " passed this tour");
+        //System.out.println(this + " passed this tour");
         currentGame.increasePlayerTurnCounter();
     }
 

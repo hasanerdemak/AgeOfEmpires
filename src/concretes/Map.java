@@ -42,10 +42,10 @@ public class Map implements MapInterface {
         }
 
         for (Item item : mapItems) {
-            if (item instanceof Human && map[item.getY() - 1][item.getX() - 1] != emptyMapSlotChar || item == null) {
+            if (item instanceof Human && map[item.getY_WithoutPrinting() - 1][item.getX_WithoutPrinting() - 1] != emptyMapSlotChar || item == null) {
                 continue;
             }
-            map[item.getY() - 1][item.getX() - 1] = item.getSymbol().charAt(0);
+            map[item.getY_WithoutPrinting() - 1][item.getX_WithoutPrinting() - 1] = item.getSymbol().charAt(0);
         }
 
         // Generate the map string
@@ -62,11 +62,11 @@ public class Map implements MapInterface {
     public Item getItemAtCoordinates(int x, int y) {
         Item item = null;
         for (Item mapItem : mapItems) {
-            if (mapItem.getX() == x && mapItem.getY() == y) {
+            if (mapItem.getX_WithoutPrinting() == x && mapItem.getY_WithoutPrinting() == y) {
                 item = mapItem;
                 var playerItems = mapItem.getOwnerPlayer().getPlayerItems();
                 for (Item playerItem : playerItems) {
-                    if (playerItem.getX() == x && playerItem.getY() == y && playerItem instanceof Building) {
+                    if (playerItem.getX_WithoutPrinting() == x && playerItem.getY_WithoutPrinting() == y && playerItem instanceof Building) {
                         item = playerItem;
                     }
                 }
