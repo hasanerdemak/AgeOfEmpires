@@ -42,7 +42,7 @@ public class Worker extends Human implements WorkerInterface {
         if (b instanceof MainBuilding) {
             throw new AgeOfEmpiresException(this + " can only build University or Tower");
         }
-        if (getOwnerPlayer().getCurrentGame().getMap().getItemAtCoordinates(getX_WithoutPrinting(), getY_WithoutPrinting()) instanceof Building) {
+        if (getOwnerPlayer().getCurrentGame().getMap().getItemAtCoordinates(getX(), getY()) instanceof Building) {
             throw new AgeOfEmpiresException(this + " -> coordinates the worker is on are not empty. There is another building.");
         }
 
@@ -61,8 +61,8 @@ public class Worker extends Human implements WorkerInterface {
 
             ResourcesUtils.deductResources(ownerPlayer, itemCost);
 
-            b.setX(getX_WithoutPrinting());
-            b.setY(getY_WithoutPrinting());
+            b.setX(getX());
+            b.setY(getY());
         } else {
             throw new AgeOfEmpiresException(this + " cannot build the " + b);
         }

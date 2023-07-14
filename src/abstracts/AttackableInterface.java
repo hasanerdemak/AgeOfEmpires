@@ -51,20 +51,20 @@ public interface AttackableInterface extends ItemInterface {
             if (this instanceof Spearman && !(targetItem instanceof Spearman)) {
                 targetItem.damage(getAttackPower());
                 if (targetItem.checkIfAlive()) {
-                    ((AttackableInterface) targetItem).defend(getX_WithoutPrinting(), getY_WithoutPrinting());
+                    ((AttackableInterface) targetItem).defend(getX(), getY());
                     this.checkIfAlive();
                 }
             }
             // else if priority is on the defender item
             else if (!(this instanceof Spearman) && targetItem instanceof Spearman) {
-                ((Spearman) targetItem).defend(getX_WithoutPrinting(), getY_WithoutPrinting());
+                ((Spearman) targetItem).defend(getX(), getY());
                 if (this.checkIfAlive()) {
                     targetItem.damage(getAttackPower());
                     targetItem.checkIfAlive();
                 }
             } else {
                 targetItem.damage(getAttackPower());
-                ((AttackableInterface) targetItem).defend(getX_WithoutPrinting(), getY_WithoutPrinting());
+                ((AttackableInterface) targetItem).defend(getX(), getY());
                 targetItem.checkIfAlive();
                 this.checkIfAlive();
             }

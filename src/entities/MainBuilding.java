@@ -36,8 +36,8 @@ public class MainBuilding extends Building {
             ResourcesUtils.deductResources(ownerPlayer, itemCost);
 
             human.setOwnerPlayer(ownerPlayer);
-            human.setX(getX_WithoutPrinting());
-            human.setY(getY_WithoutPrinting());
+            human.setX(getX());
+            human.setY(getY());
 
             if (human instanceof Soldier) {
                 ownerPlayer.addSoldier((Soldier) human, true);

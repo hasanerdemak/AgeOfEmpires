@@ -45,7 +45,6 @@ public abstract class Item implements ItemInterface {
 
     @Override
     public int getX() {
-        System.out.println(x);
         return x;
     }
 
@@ -57,13 +56,7 @@ public abstract class Item implements ItemInterface {
     }
 
     @Override
-    public int getX_WithoutPrinting() {
-        return x;
-    }
-
-    @Override
     public int getY() {
-        System.out.println(y);
         return y;
     }
 
@@ -75,23 +68,12 @@ public abstract class Item implements ItemInterface {
     }
 
     @Override
-    public int getY_WithoutPrinting() {
-        return y;
-    }
-
-    @Override
     public int getLifePoints() {
-        System.out.println(lifePoints);
         return lifePoints;
     }
 
     public void setLifePoints(int lifePoints) {
         this.lifePoints = lifePoints;
-    }
-
-    @Override
-    public int getLifePoints_WithoutPrinting() {
-        return lifePoints;
     }
 
     public Resources getCost() {
@@ -108,7 +90,7 @@ public abstract class Item implements ItemInterface {
 
     @Override
     public boolean checkIfAlive() {
-        if (getLifePoints_WithoutPrinting() <= 0) {
+        if (getLifePoints() <= 0) {
             ownerPlayer.getCurrentGame().getMap().getMapItems().remove(this);
             return false;
         }
@@ -117,9 +99,7 @@ public abstract class Item implements ItemInterface {
 
     @Override
     public String print_message() {
-        String message = this + "\t->\tSymbol: " + getSymbol() + "\tx: " + getX_WithoutPrinting() + "\ty: " + getY_WithoutPrinting() + "\tlife points: " + getLifePoints_WithoutPrinting();
-        System.out.println(message);
-        return message;
+        return this + "\t->\tSymbol: " + getSymbol() + "\tx: " + getX() + "\ty: " + getY() + "\tlife points: " + getLifePoints();
     }
 
     @Override

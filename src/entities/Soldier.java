@@ -20,19 +20,12 @@ public abstract class Soldier extends Human {
 
     @Override
     public int getLifePoints() {
-        var life = super.getLifePoints_WithoutPrinting() + getTrainingCount();
-        System.out.println(life);
-        return life;
+        return super.getLifePoints() + getTrainingCount();
     }
 
     @Override
     public void setLifePoints(int lifePoints) {
         super.setLifePoints(lifePoints - getTrainingCount());
-    }
-
-    @Override
-    public int getLifePoints_WithoutPrinting() {
-        return super.getLifePoints_WithoutPrinting() + getTrainingCount();
     }
 
     @Override

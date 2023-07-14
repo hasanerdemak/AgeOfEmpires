@@ -26,7 +26,7 @@ public class MoveControlUtils {
             throw new AgeOfEmpiresException(callerItem + " cannot " + moveName + " these coordinates. Indexes are out of range");
         }
 
-        if (x == callerItem.getX_WithoutPrinting() && y == callerItem.getY_WithoutPrinting()) {
+        if (x == callerItem.getX() && y == callerItem.getY()) {
             throw new AgeOfEmpiresException(callerItem + " cannot " + moveName + " its own coordinates");
         }
     }
@@ -34,9 +34,9 @@ public class MoveControlUtils {
     public static <T extends ItemInterface & AttackableInterface> void checkAttackDistance(T callerItem, int x, int y) throws AgeOfEmpiresException {
         float distance;
         if (callerItem instanceof Catapult) {
-            distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerItem.getX_WithoutPrinting(), callerItem.getY_WithoutPrinting(), x, y);
+            distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);
         } else {
-            distance = DistanceUtils.getEuclideanDistanceBetweenCoordinates(callerItem.getX_WithoutPrinting(), callerItem.getY_WithoutPrinting(), x, y);
+            distance = DistanceUtils.getEuclideanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);
         }
 
         if (distance < callerItem.getLowerAttackDistanceLimit() || distance > callerItem.getUpperAttackDistanceLimit()) {
@@ -58,7 +58,7 @@ public class MoveControlUtils {
 
 
     public static void checkMoveDistance(Human callerHuman, int x, int y) throws AgeOfEmpiresException {
-        float distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerHuman.getX_WithoutPrinting(), callerHuman.getY_WithoutPrinting(), x, y);
+        float distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerHuman.getX(), callerHuman.getY(), x, y);
         if (distance > callerHuman.getMovementSpeed()) {
             throw new AgeOfEmpiresException(callerHuman + " cannot move to coordinates x: " + x + ", y: " + y + " (Long distance)");
         }

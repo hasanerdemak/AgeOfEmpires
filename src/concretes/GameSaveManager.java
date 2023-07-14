@@ -65,7 +65,7 @@ public class GameSaveManager {
     }
 
     private static ItemData createItemData(Item item) {
-        return new ItemData(item.getClass().getSimpleName(), item.getItemID(), item.getX_WithoutPrinting(), item.getY_WithoutPrinting(), item.getLifePoints_WithoutPrinting());
+        return new ItemData(item.getClass().getSimpleName(), item.getItemID(), item.getX(), item.getY(), item.getLifePoints());
     }
 
     public static void extractGameDataToGame(GameData gameData, Game game) throws AgeOfEmpiresException {

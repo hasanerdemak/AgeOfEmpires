@@ -43,7 +43,7 @@ public class Player implements PlayerInterface {
             }
 
             assert mainBuilding != null;
-            var initialWorker = new Worker(this, mainBuilding.getX_WithoutPrinting(), mainBuilding.getY_WithoutPrinting());
+            var initialWorker = new Worker(this, mainBuilding.getX(), mainBuilding.getY());
             addWorker(initialWorker, true);
         }
     }

@@ -10,7 +10,4 @@ public interface HumanInterface {
 
     int getLifePoints();
 
-    int getLifePoints_WithoutPrinting();
-
-
 }
