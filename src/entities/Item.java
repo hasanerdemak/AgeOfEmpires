@@ -1,9 +1,8 @@
 package entities;
 
-import abstracts.ItemInterface;
-import concretes.Player;
-import concretes.Resources;
 import exceptions.AgeOfEmpiresException;
+import game.Player;
+import interfaces.ItemInterface;
 
 public abstract class Item implements ItemInterface {
     private int itemID;
