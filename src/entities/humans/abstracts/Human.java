@@ -68,6 +68,7 @@ public abstract class Human extends Item implements HumanInterface, AttackableIn
     @Override
     public void attack(int x, int y) throws AgeOfEmpiresException {
         AttackableInterface.super.attack(x, y);
+        setCurrentState(State.IDLE);
     }
 
     @Override
@@ -81,6 +82,8 @@ public abstract class Human extends Item implements HumanInterface, AttackableIn
         // Go to x,y
         setX(x);
         setY(y);
+
+        setCurrentState(State.IDLE);
 
         // Increase player turn counter after successful move
         getOwnerPlayer().getCurrentGame().increasePlayerTurnCounter();

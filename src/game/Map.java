@@ -19,10 +19,6 @@ public class Map implements MapInterface {
         return mapItems;
     }
 
-    public void setMapItems(ArrayList<Item> mapItems) {
-        this.mapItems = mapItems;
-    }
-
     public void addMapItem(Item newItem) {
         if (!mapItems.contains(newItem)) {
             mapItems.add(newItem);

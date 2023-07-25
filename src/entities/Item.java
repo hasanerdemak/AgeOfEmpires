@@ -5,12 +5,21 @@ import game.Player;
 import interfaces.ItemInterface;
 
 public abstract class Item implements ItemInterface {
+
+    public enum State{
+        IDLE,
+        ATTACK,
+        MOVE,
+        BUILD
+    }
+
     private int itemID;
     private Player ownerPlayer;
     private int x;
     private int y;
     private int lifePoints;
     private Resources cost;
+    private State currentState = State.IDLE;
 
     public Item(int lifePoints, Resources cost) {
         this.lifePoints = lifePoints;
@@ -83,6 +92,14 @@ public abstract class Item implements ItemInterface {
         this.cost = cost;
     }
 
+    public State getCurrentState() {
+        return currentState;
+    }
+
+    public void setCurrentState(State currentState) {
+        this.currentState = currentState;
+    }
+
     public void damage(int attackPower) {
         this.lifePoints -= attackPower;
     }
@@ -110,4 +127,5 @@ public abstract class Item implements ItemInterface {
             return className + "-" + getItemID() + " (" + getOwnerPlayer() + ")";
         }
     }
+
 }

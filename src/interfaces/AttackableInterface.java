@@ -1,10 +1,10 @@
 package interfaces;
 
+import game.Game;
+import utils.MoveControlUtils;
 import entities.Item;
 import entities.humans.concretes.Spearman;
 import exceptions.AgeOfEmpiresException;
-import game.Game;
-import utils.MoveControlUtils;
 
 public interface AttackableInterface extends ItemInterface {
     default void attack(int x, int y) throws AgeOfEmpiresException {

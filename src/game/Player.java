@@ -72,6 +72,18 @@ public class Player implements PlayerInterface {
         this.currentGame = currentGame;
     }
 
+    public ArrayList<Tower> getTowers() {
+        return towers;
+    }
+
+    public ArrayList<Worker> getWorkers() {
+        return workers;
+    }
+
+    public ArrayList<Soldier> getSoldiers() {
+        return soldiers;
+    }
+
     @Override
     public int getWood() {
         return wood;

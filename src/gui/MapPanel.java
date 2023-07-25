@@ -1,7 +1,8 @@
 package gui;
 
 import entities.Item;
-import entities.buildings.concretes.MainBuilding;
+import game.GameManager;
+import gui.itemactionpanels.MainBuildingActionsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,22 +20,20 @@ public class MapPanel extends JPanel {
     static {
         TILE_COLORS.put(TileKey.EMPTY, Color.WHITE);
         TILE_COLORS.put(TileKey.HIGHLIGHTED, Color.RED);
-        TILE_COLORS.put(TileKey.OCCUPIED, Color.GREEN);
+        TILE_COLORS.put(TileKey.OCCUPIED, Color.GRAY);
+        TILE_COLORS.put(TileKey.OCCUPIED_HIGHLIGHTED, Color.GREEN);
         TILE_COLORS.put(TileKey.LINE, Color.BLACK);
     }
 
     // This 2D array will store the items on the map.
     // 'null' represents an empty cell, and non-null values will represent the buildings or humans on the map.
-    private Item[][] mapItems;
     private ArrayList<Block> highlightedBlocks;
 
+    private Item selectedItem;
+
     public MapPanel() {
-        // Initialize the mapItems array with null values to represent an empty map at the start of the game.
-        mapItems = new Item[MAP_ROWS][MAP_COLS];
         highlightedBlocks = new ArrayList<>();
         //setSize(BLOCK_SIZE*MAP_COLS, BLOCK_SIZE*MAP_ROWS);
-        mapItems[1][1] = new MainBuilding();
-
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -47,7 +46,12 @@ public class MapPanel extends JPanel {
                 int col = x / getBlockWidth();
                 int row = y / getBlockHeight();
 
-                highlightNeighbors(col, row);
+                selectedItem = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row);
+                if (selectedItem != null) {
+                    highlightNeighbors(col, row);
+                    GamePanel gamePanel = (GamePanel) getParent();
+                    gamePanel.getItemActionsPanel().openPanel(selectedItem);
+                }
 
                 System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
             }
@@ -63,16 +67,23 @@ public class MapPanel extends JPanel {
     }
 
     public int getXOffset() {
-        return (getWidth() % MAP_COLS) / 2;
+        return ((getWidth() % MAP_COLS) / 2) - getBlockWidth();
     }
 
     public int getYOffset() {
-        return (getHeight() % MAP_ROWS) / 2;
+        return ((getHeight() % MAP_ROWS) / 2) - getBlockHeight();
+    }
+
+    public Item getSelectedItem() {
+        return selectedItem;
+    }
+
+    public void setSelectedItem(Item selectedItem) {
+        this.selectedItem = selectedItem;
     }
 
     // Method to update the mapItems array when a building or human is placed on the map.
-    public void updateMapItem(int row, int col, Item item) {
-        mapItems[row][col] = item;
+    public void updateMapItem(int row, int col) {
         repaint(); // Redraw the map to reflect the changes.
     }
 
@@ -86,10 +97,10 @@ public class MapPanel extends JPanel {
         int xOffset = getXOffset();
         int yOffset = getYOffset();
 
-        for (int row = 0; row < MAP_ROWS; row++) {
-            for (int col = 0; col < MAP_COLS; col++) {
+        for (int row = 1; row <= MAP_ROWS; row++) {
+            for (int col = 1; col <= MAP_COLS; col++) {
                 // Determine the color of the cell based on its contents.
-                Item item = mapItems[row][col];
+                Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row); //mapItems[row][col];
                 Color cellColor = item != null ? TILE_COLORS.get(TileKey.OCCUPIED) : TILE_COLORS.get(TileKey.EMPTY);
 
                 g.setColor(cellColor);
@@ -133,7 +144,7 @@ public class MapPanel extends JPanel {
             int col = block.col;
             int row = block.row;
             // Determine the color of the cell based on its contents.
-            Item item = mapItems[row][col];
+            Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row); // mapItems[row][col];
             Color cellColor = item != null ? TILE_COLORS.get(TileKey.OCCUPIED) : TILE_COLORS.get(TileKey.EMPTY);
 
             g.setColor(cellColor);
@@ -159,19 +170,24 @@ public class MapPanel extends JPanel {
         int blockWidth = getBlockWidth();
         int blockHeight = getBlockHeight();
 
-        highlightBlock(col, row, xOffset, yOffset, blockWidth, blockHeight, g);
-        highlightBlock(col + 1, row, xOffset, yOffset, blockWidth, blockHeight, g);
-        highlightBlock(col, row + 1, xOffset, yOffset, blockWidth, blockHeight, g);
-        highlightBlock(col - 1, row, xOffset, yOffset, blockWidth, blockHeight, g);
-        highlightBlock(col, row - 1, xOffset, yOffset, blockWidth, blockHeight, g);
+        if (selectedItem == null || selectedItem.getCurrentState() == Item.State.IDLE) {
+            highlightBlock(col, row, xOffset, yOffset, blockWidth, blockHeight, g);
+        } else {
+            for (int i = col - 7; i <= col + 7; i++) {
+                for (int j = row - 7; j <= row + 7; j++) {
+                    highlightBlock(i, j, xOffset, yOffset, blockWidth, blockHeight, g);
+                }
+            }
+        }
     }
 
     private void highlightBlock(int col, int row, int xOffset, int yOffset, int blockWidth, int blockHeight, Graphics g) {
-        if (col < 0 || col > 100 || row < 0 || row > 50) {
+        if (col < 1 || col > 100 || row < 1 || row > 50) {
             return;
         }
-        Item item = mapItems[row][col];
-        Color cellColor = item != null ? TILE_COLORS.get(TileKey.OCCUPIED) : TILE_COLORS.get(TileKey.HIGHLIGHTED);
+
+        Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row);
+        Color cellColor = item != null ? TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED) : TILE_COLORS.get(TileKey.HIGHLIGHTED);
 
         g.setColor(cellColor);
         g.fillRect(col * blockWidth + xOffset, row * blockHeight + yOffset, blockWidth, blockHeight);
@@ -187,7 +203,7 @@ public class MapPanel extends JPanel {
     }
 
     private enum TileKey {
-        EMPTY, HIGHLIGHTED, OCCUPIED, LINE
+        EMPTY, HIGHLIGHTED, OCCUPIED, OCCUPIED_HIGHLIGHTED, LINE
     }
 
 }
@@ -201,16 +217,3 @@ class Block {
         this.row = row;
     }
 }
-
-   /* @Override
-    public void mouseClicked(MouseEvent e) {
-        int row = e.getX()/BLOCK_SIZE;
-        int col = e.getY()/BLOCK_SIZE;
-        System.out.println(row);
-
-        //resetBlocks();
-        var graphics = getGraphics();
-        graphics.setColor(Color.RED);
-        graphics.fillRect(row*BLOCK_SIZE,col*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
-        //highlightBlock(x,y);
-    }*/

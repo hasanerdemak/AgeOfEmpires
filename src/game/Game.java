@@ -79,6 +79,14 @@ public class Game implements GameInterface {
         return map;
     }
 
+    public Player getCurrentPlayer(){
+        try {
+            return getPlayer(getPlayerTurnCounter());
+        } catch (AgeOfEmpiresException e) {
+            return null;
+        }
+    }
+
     @Override
     public void save_text(String filename) throws AgeOfEmpiresException {
         var gameData = GameSaveManager.createGameData(this);

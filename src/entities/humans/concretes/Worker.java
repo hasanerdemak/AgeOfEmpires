@@ -72,6 +72,8 @@ public class Worker extends Human implements WorkerInterface {
             throw new AgeOfEmpiresException(this + " cannot build the " + b);
         }
 
+        setCurrentState(State.IDLE);
+
         // Increase player turn counter after successful move
         getOwnerPlayer().getCurrentGame().increasePlayerTurnCounter();
 

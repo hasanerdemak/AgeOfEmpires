@@ -47,6 +47,7 @@ public class Tower extends Building implements TowerInterface, AttackableInterfa
     @Override
     public void attack(int x, int y) throws AgeOfEmpiresException {
         AttackableInterface.super.attack(x, y);
+        setCurrentState(State.IDLE);
     }
 
     @Override

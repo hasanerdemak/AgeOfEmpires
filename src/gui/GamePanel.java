@@ -2,7 +2,9 @@ package gui;
 
 import exceptions.AgeOfEmpiresException;
 import game.Game;
+import game.GameManager;
 import game.Player;
+import gui.itemactionpanels.ItemActionsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,6 +19,7 @@ public class GamePanel extends JPanel {
         itemActionsPanel = new ItemActionsPanel();
         playerInfoPanels = new PlayerInfoPanel[playerCount];
         Game game = new Game(2);
+        GameManager.getInstance().setGame(game);
         for (int i = 0; i < playerCount; i++) {
             playerInfoPanels[i] = new PlayerInfoPanel(new Player(i, game, true));
             playerInfoPanels[i].setPreferredSize(new Dimension(800 / playerCount, 100));
@@ -32,11 +35,26 @@ public class GamePanel extends JPanel {
         add(createPanelRow(playerInfoPanels), BorderLayout.SOUTH);
     }
 
+    public MapPanel getMapPanel() {
+        return mapPanel;
+    }
+
+    public ItemActionsPanel getItemActionsPanel() {
+        return itemActionsPanel;
+    }
+
     private JPanel createPanelRow(JPanel[] panels) {
         JPanel rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         for (JPanel panel : panels) {
             rowPanel.add(panel);
         }
         return rowPanel;
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        g.drawLine(mapPanel.getWidth() ,0, mapPanel.getWidth(), mapPanel.getHeight());
+        g.drawLine(0 ,mapPanel.getHeight(), getWidth(), mapPanel.getHeight());
     }
 }

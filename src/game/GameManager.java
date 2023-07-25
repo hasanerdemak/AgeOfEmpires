@@ -25,6 +25,14 @@ public class GameManager {
         return instance;
     }
 
+    public Game getGame() {
+        return game;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
+
     public void startGame() throws AgeOfEmpiresException {
         scanner = new Scanner(System.in);
 
