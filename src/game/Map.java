@@ -6,6 +6,7 @@ import entities.humans.abstracts.Human;
 import interfaces.MapInterface;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class Map implements MapInterface {
@@ -70,5 +71,21 @@ public class Map implements MapInterface {
             }
         }
         return item;
+    }
+
+    public ArrayList<Item> getAllItemsAtCoordinates(int x, int y) {
+        ArrayList<Item> itemArrayList = new ArrayList<>();
+        for (Item mapItem : mapItems) {
+            if (mapItem.getX() == x && mapItem.getY() == y) {
+                var playerItems = mapItem.getOwnerPlayer().getPlayerItems();
+                for (Item playerItem : playerItems) {
+                    if (playerItem.getX() == x && playerItem.getY() == y) {
+                        itemArrayList.add(playerItem);
+                    }
+                }
+                break;
+            }
+        }
+        return itemArrayList;
     }
 }

@@ -1,8 +1,10 @@
-package gui;
+package gui.game;
 
 import game.Player;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 import java.awt.*;
 
 public class PlayerInfoPanel extends JPanel {
@@ -14,6 +16,8 @@ public class PlayerInfoPanel extends JPanel {
     private JLabel stoneLabel;
 
     public PlayerInfoPanel(Player player) {
+        setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+
         this.player = player;
         setLayout(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -33,7 +37,6 @@ public class PlayerInfoPanel extends JPanel {
         add(populationLabel, constraints);
 
         constraints.gridy = 2;
-        constraints.insets = new Insets(0, 0, 0, 5); // Set top inset to add space between C, D, and E labels
         JPanel rowPanel = createLabelRow(new JLabel[]{woodLabel, goldLabel, stoneLabel});
         add(rowPanel, constraints);
     }

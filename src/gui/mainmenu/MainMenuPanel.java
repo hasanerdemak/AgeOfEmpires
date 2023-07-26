@@ -1,4 +1,4 @@
-package gui;
+package gui.mainmenu;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

@@ -1,10 +1,10 @@
-package gui;
+package gui.game;
 
 import exceptions.AgeOfEmpiresException;
 import game.Game;
 import game.GameManager;
 import game.Player;
-import gui.itemactionpanels.ItemActionsPanel;
+import gui.game.itemactionpanels.ItemActionsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +30,10 @@ public class GamePanel extends JPanel {
         mapPanel.setPreferredSize(new Dimension(1000, 600));
         itemActionsPanel.setPreferredSize(new Dimension(200, 600));
 
-        add(mapPanel, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(mapPanel);
+
+        add(scrollPane, BorderLayout.CENTER);
+        //add(mapPanel, BorderLayout.CENTER);
         add(itemActionsPanel, BorderLayout.EAST);
         add(createPanelRow(playerInfoPanels), BorderLayout.SOUTH);
     }
@@ -51,10 +54,4 @@ public class GamePanel extends JPanel {
         return rowPanel;
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        g.drawLine(mapPanel.getWidth() ,0, mapPanel.getWidth(), mapPanel.getHeight());
-        g.drawLine(0 ,mapPanel.getHeight(), getWidth(), mapPanel.getHeight());
-    }
 }

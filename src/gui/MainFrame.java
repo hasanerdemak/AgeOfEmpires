@@ -1,8 +1,11 @@
 package gui;
 
 import exceptions.AgeOfEmpiresException;
+import gui.game.GamePanel;
+import gui.mainmenu.MainMenuPanel;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class MainFrame extends JFrame {
     public static final int WIDTH = 1280;
@@ -14,6 +17,12 @@ public class MainFrame extends JFrame {
         setTitle("Age of Empires - Turn-Based Game");
         setSize(WIDTH, HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
 
         mainMenuPanel = new MainMenuPanel();
         gamePanel = new GamePanel(2);

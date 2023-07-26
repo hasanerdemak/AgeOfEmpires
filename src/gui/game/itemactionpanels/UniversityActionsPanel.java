@@ -1,8 +1,8 @@
-package gui.itemactionpanels;
+package gui.game.itemactionpanels;
 
 import entities.Item;
 import entities.buildings.concretes.University;
-import gui.itemactionpanels.abstracts.AbstractItemActionsPanel;
+import gui.game.itemactionpanels.abstracts.AbstractItemActionsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,15 +18,20 @@ public class UniversityActionsPanel extends AbstractItemActionsPanel {
         var constraints = getConstraints();
 
         constraints.gridy = 1;
-        add(trainInfantryButton);
+        add(trainInfantryButton, constraints);
         constraints.gridy = 2;
-        add(trainCavalryButton);
+        add(trainCavalryButton, constraints);
         constraints.gridy = 3;
-        add(trainCatapultButton);
+        add(trainCatapultButton, constraints);
+
+        var layout = (GridBagLayout) getLayout();
+        layout.rowHeights = new int[getComponentCount()+1];
+        layout.rowWeights = new double[getComponentCount()+1];
+        layout.rowWeights[getComponentCount()] = Double.MIN_VALUE;
     }
 
     @Override
-    public void onAddedCustomPanel(Item item) {
+    public void onPanelVisible(Item item) {
         var university = (University) item;
         String info = university.print_message() +
                 "\n" +
@@ -35,6 +40,13 @@ public class UniversityActionsPanel extends AbstractItemActionsPanel {
                 "Cavalry Training Count: " + university.getCavalryTrainingCount() +
                 "\n" +
                 "Catapult Training Count: " + university.getCatapultTrainingCount();
-        getInfoLabel().setText(info);
+        getInfoTextArea().setText(info);
+    }
+
+    @Override
+    public void checkButtonEnableState() {
+        trainInfantryButton.setEnabled(isButtonsEnabled());
+        trainCavalryButton.setEnabled(isButtonsEnabled());
+        trainCatapultButton.setEnabled(isButtonsEnabled());
     }
 }

@@ -142,6 +142,18 @@ public class GameManager {
         return operation != 7;
     }
 
+    // Todo: purchase gibi diğer fonksiyonları da tanımla
+    public void purchase(Player player, String itemName) throws AgeOfEmpiresException {
+        switch (itemName) {
+            case "Worker" -> player.purchase(new Worker());
+            case "Archer" -> player.purchase(new Archer());
+            case "Swordman" -> player.purchase(new Swordman());
+            case "Spearman" -> player.purchase(new Spearman());
+            case "Cavalry" -> player.purchase(new Cavalry());
+            case "Catapult" -> player.purchase(new Catapult());
+        }
+    }
+
     public boolean getSoldierAndActions(Player player) throws AgeOfEmpiresException {
         System.out.println("-----------------------------------");
         System.out.println("Current Soldiers owned by " + player);
