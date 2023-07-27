@@ -123,7 +123,7 @@ public class University extends Building implements UniversityInterface {
         return false;
     }
 
-    private enum UnitType {
+    public enum UnitType {
         INFANTRY,
         CAVALRY,
         CATAPULT

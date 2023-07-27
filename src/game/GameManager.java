@@ -1,11 +1,14 @@
 package game;
 
+import entities.Item;
 import entities.buildings.abstracts.Building;
 import entities.buildings.concretes.Tower;
 import entities.buildings.concretes.University;
+import entities.humans.abstracts.Human;
 import entities.humans.abstracts.Soldier;
 import entities.humans.concretes.*;
 import exceptions.AgeOfEmpiresException;
+import interfaces.AttackableInterface;
 
 import java.util.Scanner;
 
@@ -142,7 +145,6 @@ public class GameManager {
         return operation != 7;
     }
 
-    // Todo: purchase gibi diğer fonksiyonları da tanımla
     public void purchase(Player player, String itemName) throws AgeOfEmpiresException {
         switch (itemName) {
             case "Worker" -> player.purchase(new Worker());
@@ -151,6 +153,29 @@ public class GameManager {
             case "Spearman" -> player.purchase(new Spearman());
             case "Cavalry" -> player.purchase(new Cavalry());
             case "Catapult" -> player.purchase(new Catapult());
+        }
+    }
+
+    public void train(University university, University.UnitType unitType) throws AgeOfEmpiresException {
+        switch (unitType) {
+            case INFANTRY -> university.trainInfantry();
+            case CAVALRY -> university.trainCavalry();
+            case CATAPULT -> university.trainCatapult();
+        }
+    }
+
+    public void move(Human human, int x, int y) throws AgeOfEmpiresException {
+        human.move(x, y);
+    }
+
+    public void attack(AttackableInterface attackableItem, int x, int y) throws AgeOfEmpiresException {
+        attackableItem.attack(x, y);
+    }
+
+    public void build(Worker worker, String building) throws AgeOfEmpiresException {
+        switch (building){
+            case "University" -> worker.build(new University());
+            case "Tower" -> worker.build(new Tower());
         }
     }
 
