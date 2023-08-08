@@ -81,7 +81,7 @@ public class Archer extends Soldier {
 
     @Override
     public String getSymbol() {
-        return "A";
+        return "O";
     }
 
     private enum Weapon {
