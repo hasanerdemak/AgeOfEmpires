@@ -34,7 +34,7 @@ public class Game implements GameInterface {
 
         players = new ArrayList<>();
 
-        GameData gameData;
+        GameSaveManager.GameData gameData;
         if (isBinary) {
             gameData = GameSaveManager.loadGameDataFromBinaryFile(filename);
         } else {

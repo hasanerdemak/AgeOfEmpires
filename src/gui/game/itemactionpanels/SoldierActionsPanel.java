@@ -38,7 +38,7 @@ public class SoldierActionsPanel extends AbstractItemActionsPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 soldier.setCurrentState(Item.State.MOVE);
-                asdasdm
+
                         // todo mapPanel'e eriş. Highlight et
 
                 int x = 0, y = 0;

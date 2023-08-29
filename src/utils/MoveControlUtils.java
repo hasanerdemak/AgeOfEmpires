@@ -68,7 +68,8 @@ public class MoveControlUtils {
 
     public static void checkEmptyCoordinates(Human callerHuman, int x, int y) throws AgeOfEmpiresException {
         Item itemOnMap = callerHuman.getOwnerPlayer().getCurrentGame().getMap().getItemAtCoordinates(x, y);
-        if (itemOnMap != null && !(itemOnMap instanceof MainBuilding)) {
+        if (itemOnMap != null &&
+                !(itemOnMap.getClass().equals(MainBuilding.class) && itemOnMap.getOwnerPlayer().getMainBuilding().equals(itemOnMap))) {
             throw new AgeOfEmpiresException(callerHuman + " cannot move to the coordinates x: " + x + ", y: " + y + " (Coordinates are not empty)");
         }
     }

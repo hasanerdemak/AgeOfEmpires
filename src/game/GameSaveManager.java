@@ -303,83 +303,83 @@ public class GameSaveManager {
         }
     }
 
-}
-
-class GameData implements Serializable {
-    public boolean gameOver;
-    public int playerTurnCounter;
-    public ArrayList<PlayerData> playerDataArrayList = new ArrayList<>();
-}
-
-class PlayerData implements Serializable {
-    public int playerID;
-    public int wood;
-    public int gold;
-    public int stone;
-    public ArrayList<ItemData> itemDataArrayList = new ArrayList<>();
-
-    public int towerIDCounter;
-    public int workerIDCounter;
-    public int archerIDCounter;
-    public int swordmanIDCounter;
-    public int spearmanIDCounter;
-    public int cavalryIDCounter;
-    public int catapultIDCounter;
-
-    public int infantryTrainingCount;
-    public int cavalryTrainingCount;
-    public int catapultTrainingCount;
-
-    public PlayerData() {
-        this.playerID = 0;
-        this.wood = 0;
-        this.gold = 0;
-        this.stone = 0;
-        this.towerIDCounter = 0;
-        this.workerIDCounter = 0;
-        this.archerIDCounter = 0;
-        this.swordmanIDCounter = 0;
-        this.spearmanIDCounter = 0;
-        this.cavalryIDCounter = 0;
-        this.catapultIDCounter = 0;
+    static class GameData implements Serializable {
+        public boolean gameOver;
+        public int playerTurnCounter;
+        public ArrayList<PlayerData> playerDataArrayList = new ArrayList<>();
     }
 
-    public PlayerData(int playerID, int wood, int gold, int stone, int towerIDCounter, int workerIDCounter, int archerIDCounter, int swordmanIDCounter, int spearmanIDCounter, int cavalryIDCounter, int catapultIDCounter) {
-        this.playerID = playerID;
-        this.wood = wood;
-        this.gold = gold;
-        this.stone = stone;
-        this.towerIDCounter = towerIDCounter;
-        this.workerIDCounter = workerIDCounter;
-        this.archerIDCounter = archerIDCounter;
-        this.swordmanIDCounter = swordmanIDCounter;
-        this.spearmanIDCounter = spearmanIDCounter;
-        this.cavalryIDCounter = cavalryIDCounter;
-        this.catapultIDCounter = catapultIDCounter;
+    static class PlayerData implements Serializable {
+        public int playerID;
+        public int wood;
+        public int gold;
+        public int stone;
+        public ArrayList<ItemData> itemDataArrayList = new ArrayList<>();
+
+        public int towerIDCounter;
+        public int workerIDCounter;
+        public int archerIDCounter;
+        public int swordmanIDCounter;
+        public int spearmanIDCounter;
+        public int cavalryIDCounter;
+        public int catapultIDCounter;
+
+        public int infantryTrainingCount;
+        public int cavalryTrainingCount;
+        public int catapultTrainingCount;
+
+        public PlayerData() {
+            this.playerID = 0;
+            this.wood = 0;
+            this.gold = 0;
+            this.stone = 0;
+            this.towerIDCounter = 0;
+            this.workerIDCounter = 0;
+            this.archerIDCounter = 0;
+            this.swordmanIDCounter = 0;
+            this.spearmanIDCounter = 0;
+            this.cavalryIDCounter = 0;
+            this.catapultIDCounter = 0;
+        }
+
+        public PlayerData(int playerID, int wood, int gold, int stone, int towerIDCounter, int workerIDCounter, int archerIDCounter, int swordmanIDCounter, int spearmanIDCounter, int cavalryIDCounter, int catapultIDCounter) {
+            this.playerID = playerID;
+            this.wood = wood;
+            this.gold = gold;
+            this.stone = stone;
+            this.towerIDCounter = towerIDCounter;
+            this.workerIDCounter = workerIDCounter;
+            this.archerIDCounter = archerIDCounter;
+            this.swordmanIDCounter = swordmanIDCounter;
+            this.spearmanIDCounter = spearmanIDCounter;
+            this.cavalryIDCounter = cavalryIDCounter;
+            this.catapultIDCounter = catapultIDCounter;
+        }
+
     }
 
-}
+    static class ItemData implements Serializable {
+        public String itemType;
+        public int itemID;
+        public int x;
+        public int y;
+        public int lifePoints;
 
-class ItemData implements Serializable {
-    public String itemType;
-    public int itemID;
-    public int x;
-    public int y;
-    public int lifePoints;
+        public ItemData() {
+            this.itemType = null;
+            this.itemID = 0;
+            this.x = 0;
+            this.y = 0;
+            this.lifePoints = 0;
+        }
 
-    public ItemData() {
-        this.itemType = null;
-        this.itemID = 0;
-        this.x = 0;
-        this.y = 0;
-        this.lifePoints = 0;
+        public ItemData(String itemType, int itemID, int x, int y, int lifePoints) {
+            this.itemType = itemType;
+            this.itemID = itemID;
+            this.x = x;
+            this.y = y;
+            this.lifePoints = lifePoints;
+        }
     }
 
-    public ItemData(String itemType, int itemID, int x, int y, int lifePoints) {
-        this.itemType = itemType;
-        this.itemID = itemID;
-        this.x = x;
-        this.y = y;
-        this.lifePoints = lifePoints;
-    }
 }

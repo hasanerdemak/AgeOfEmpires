@@ -12,7 +12,7 @@ public abstract class AbstractItemActionsPanel extends JPanel {
     private JTextArea infoTextArea = new JTextArea();
     private GridBagConstraints constraints = new GridBagConstraints();
     private MapPanel mapPanel;
-    asdasdad
+
     // todo bu referans üzerinden move ve attack durumlarında highlight et
     private boolean isButtonsEnabled;
 
