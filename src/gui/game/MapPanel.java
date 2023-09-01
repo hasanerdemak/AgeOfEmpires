@@ -28,6 +28,7 @@ public class MapPanel extends JPanel {
         TILE_COLORS.put(TileKey.OCCUPIED_HIGHLIGHTED, Color.GREEN);
         TILE_COLORS.put(TileKey.LINE, Color.BLACK);
     }
+    JScrollPane parentScrollPane;
 
     private int blockSize = BLOCK_SIZE; // Current size of the blocks
     private int xOffset = 0;
@@ -105,6 +106,17 @@ public class MapPanel extends JPanel {
             public void mouseWheelMoved(MouseWheelEvent e) {
                 // Check if the CTRL key is pressed
                 if (e.isControlDown()) {
+                    parentScrollPane = (JScrollPane) getParent().getParent();
+
+                    int x = e.getX() - getXOffset();
+                    int y = e.getY() - getYOffset();
+
+                    int col = x / getBlockSize();
+                    int row = y / getBlockSize();
+
+                    // Calculate the previous block size
+                    int prevBlockSize = blockSize;
+
                     // Adjust the blockSize based on the mouse wheel rotation
                     int rotation = e.getWheelRotation();
                     if (rotation < 0) {
@@ -119,6 +131,12 @@ public class MapPanel extends JPanel {
                         }
                     }
 
+
+
+                    parentScrollPane.getHorizontalScrollBar().setValue(x);
+                    parentScrollPane.getVerticalScrollBar().setValue(y);
+
+
                     // Repaint the panel to update the view
                     revalidate(); // Ensures the scrollbars are updated if needed
                     repaint();
@@ -126,72 +144,7 @@ public class MapPanel extends JPanel {
             }
         });
 
-        // Calculate the maximum offsets based on the map size and the panel size
-        //maxXOffset = MAP_COLS * blockSize - getWidth();
-        //maxYOffset = MAP_ROWS * blockSize - getHeight();
-        maxXOffset = 100;
-        maxYOffset = 100;
-        // Add mouse listeners
-        addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                lastX = e.getX();
-                lastY = e.getY();
-                isDragging = true;
-            }
 
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                isDragging = false;
-
-                // Bring the map back to the minimum offset
-                if (xOffset < minXOffset) {
-                    xOffset = minXOffset;
-                } else if (xOffset > maxXOffset) {
-                    //xOffset = maxXOffset;
-                    xOffset = 0;
-                }
-
-                if (yOffset < minYOffset) {
-                    yOffset = minYOffset;
-                } else if (yOffset > maxYOffset) {
-                    //yOffset = maxYOffset;
-                    yOffset = 0;
-                }
-
-                // Repaint the panel to update the view
-                repaint();
-            }
-        });
-
-        // Add mouse motion listener for dragging
-        addMouseMotionListener(new MouseMotionAdapter() {
-            @Override
-            public void mouseDragged(MouseEvent e) {
-                if (isDragging) {
-                    int dx = e.getX() - lastX;
-                    int dy = e.getY() - lastY;
-
-                    // Update the xOffset and yOffset with elastic resistance if the boundaries are exceeded
-                    if (xOffset < minXOffset || xOffset > maxXOffset) {
-                        dx /= 2; // Apply resistance for dragging
-                    }
-
-                    if (yOffset < minYOffset || yOffset > maxYOffset) {
-                        dy /= 2; // Apply resistance for dragging
-                    }
-
-                    xOffset += dx;
-                    yOffset += dy;
-
-                    lastX = e.getX();
-                    lastY = e.getY();
-
-                    // Repaint the panel to update the view
-                    repaint();
-                }
-            }
-        });
     }
 
     public int getBlockSize() {
