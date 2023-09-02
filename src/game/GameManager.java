@@ -8,6 +8,7 @@ import entities.humans.abstracts.Human;
 import entities.humans.abstracts.Soldier;
 import entities.humans.concretes.*;
 import exceptions.AgeOfEmpiresException;
+import gui.MainFrame;
 import interfaces.AttackableInterface;
 
 import java.util.Scanner;
@@ -15,6 +16,7 @@ import java.util.Scanner;
 public class GameManager {
     private static GameManager instance;
     private Game game;
+    private MainFrame mainFrame;
     private Scanner scanner;
 
     private GameManager() {
@@ -34,6 +36,14 @@ public class GameManager {
 
     public void setGame(Game game) {
         this.game = game;
+    }
+
+    public MainFrame getMainFrame() {
+        return mainFrame;
+    }
+
+    public void setMainFrame(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
     }
 
     public void startGame() throws AgeOfEmpiresException {

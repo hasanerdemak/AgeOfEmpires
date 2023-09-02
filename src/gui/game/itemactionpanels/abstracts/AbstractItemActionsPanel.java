@@ -2,6 +2,7 @@ package gui.game.itemactionpanels.abstracts;
 
 import entities.Item;
 import game.GameManager;
+import gui.game.GamePanel;
 import gui.game.MapPanel;
 
 import javax.swing.*;
@@ -11,10 +12,9 @@ import java.awt.*;
 public abstract class AbstractItemActionsPanel extends JPanel {
     private JTextArea infoTextArea = new JTextArea();
     private GridBagConstraints constraints = new GridBagConstraints();
-    private MapPanel mapPanel;
-
-    // todo bu referans üzerinden move ve attack durumlarında highlight et
+    // todo mapPanel referansı üzerinden move ve attack durumlarında highlight et
     private boolean isButtonsEnabled;
+    private Item item;
 
     public AbstractItemActionsPanel() {
         GridBagLayout gridBagLayout = new GridBagLayout();
@@ -58,16 +58,16 @@ public abstract class AbstractItemActionsPanel extends JPanel {
         this.constraints = constraints;
     }
 
-    public MapPanel getMapPanel() {
-        return mapPanel;
-    }
-
-    public void setMapPanel(MapPanel mapPanel) {
-        this.mapPanel = mapPanel;
-    }
-
     public boolean isButtonsEnabled() {
         return isButtonsEnabled;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public void onPanelVisible(Item item) {

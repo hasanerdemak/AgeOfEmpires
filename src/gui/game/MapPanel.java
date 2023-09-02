@@ -1,7 +1,12 @@
 package gui.game;
 
 import entities.Item;
+import entities.buildings.concretes.MainBuilding;
+import entities.humans.abstracts.Human;
+import exceptions.AgeOfEmpiresException;
 import game.GameManager;
+import interfaces.AttackableInterface;
+import utils.MoveControlUtils;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -9,7 +14,6 @@ import javax.swing.border.SoftBevelBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +32,7 @@ public class MapPanel extends JPanel {
         TILE_COLORS.put(TileKey.OCCUPIED_HIGHLIGHTED, Color.GREEN);
         TILE_COLORS.put(TileKey.LINE, Color.BLACK);
     }
+
     JScrollPane parentScrollPane;
 
     private int blockSize = BLOCK_SIZE; // Current size of the blocks
@@ -39,6 +44,8 @@ public class MapPanel extends JPanel {
     private ArrayList<Block> highlightedBlocks = new ArrayList<>();
 
     private Item selectedItem;
+    private int lastClickedCol;
+    private int lastClickedRow;
 
     private int lastX;
     private int lastY;
@@ -60,44 +67,87 @@ public class MapPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                resetBlocks();
-
+                System.out.println(selectedItem);
                 int x = e.getX() - getXOffset();
                 int y = e.getY() - getYOffset();
 
                 int col = x / getBlockSize();
                 int row = y / getBlockSize();
-
-                GamePanel gamePanel = (GamePanel) (getParent().getParent().getParent());
-                var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
-
-                // If there is more than one item, show the selection dialog
-                if (items.size() > 1) {
-                    highlightBlock(getGraphics(), col, row);
-                    ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
-                    dialog.setVisible(true);
-
-                    selectedItem = dialog.getSelectedItem();
-                    if (selectedItem != null) {
-                        // Do something with the selected item, like open a panel, perform an action, etc.
-                        // For example, if you have an itemActionsPanel in your main application, you can do:
-                        gamePanel.getItemActionsPanel().openPanel(selectedItem);
-                    }
-                } else if (items.size() == 1) {
-                    // If there is only one item, handle it directly
-                    selectedItem = items.get(0);
-                    // Handle the item as needed
-                }
+                lastClickedCol = col;
+                lastClickedRow = row;
+                System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
 
                 if (selectedItem != null) {
-                    highlightNeighbors(col, row);
-                    gamePanel.getItemActionsPanel().openPanel(selectedItem);
-                } else {
-                    gamePanel.getItemActionsPanel().closePanels();
+                    switch (selectedItem.getCurrentState()) {
+                        case ATTACK -> {
+                            try {
+                                AttackableInterface attackableItem = (AttackableInterface) selectedItem;
+                                MoveControlUtils.checkAttackDistance(attackableItem, col, row);
+                                GameManager.getInstance().attack(attackableItem, col, row);
+                                GameManager.getInstance().getMainFrame().getGamePanel().getItemActionsPanel().closePanels();
+                                selectedItem.setCurrentState(Item.State.IDLE);
+                                selectedItem = null;
+                                repaint();
+                                return;
+                            } catch (AgeOfEmpiresException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        }
+                        case MOVE -> {
+                            try {
+                                Human human = (Human) selectedItem;
+                                MoveControlUtils.checkMoveDistance(human, col, row);
+                                GameManager.getInstance().move(human, col, row);
+                                GameManager.getInstance().getMainFrame().getGamePanel().getItemActionsPanel().closePanels();
+                                selectedItem.setCurrentState(Item.State.IDLE);
+                                selectedItem = null;
+                                repaint();
+                                return;
+                            } catch (AgeOfEmpiresException ex) {
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        "An error occurred!",
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                                return;
+                            }
+                        }
+                        case BUILD -> {
+
+
+                        }
+                    }
+
                 }
+                    GamePanel gamePanel = (GamePanel) (getParent().getParent().getParent());
+                    var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
 
+                    // If there is more than one item, show the selection dialog
+                    if (items.size() > 1) {
+                        highlightBlock(getGraphics(), col, row);
+                        ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
+                        dialog.setVisible(true);
 
-                System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
+                        selectedItem = dialog.getSelectedItem();
+                        if (selectedItem != null) {
+                            gamePanel.getItemActionsPanel().openPanel(selectedItem);
+                        }
+                    } else if (items.size() == 1) {
+                        // If there is only one item, handle it directly
+                        selectedItem = items.get(0);
+                        // Handle the item as needed
+                    }
+
+                    if (selectedItem != null) {
+                        highlightNeighbors(col, row);
+                        gamePanel.getItemActionsPanel().openPanel(selectedItem);
+                    } else {
+                        gamePanel.getItemActionsPanel().closePanels();
+                    }
+
+                //resetBlocks();
+                repaint();
             }
         });
 
@@ -108,14 +158,8 @@ public class MapPanel extends JPanel {
                 if (e.isControlDown()) {
                     parentScrollPane = (JScrollPane) getParent().getParent();
 
-                    int x = e.getX() - getXOffset();
-                    int y = e.getY() - getYOffset();
-
-                    int col = x / getBlockSize();
-                    int row = y / getBlockSize();
-
-                    // Calculate the previous block size
-                    int prevBlockSize = blockSize;
+                    int x = e.getX();
+                    int y = e.getY();
 
                     // Adjust the blockSize based on the mouse wheel rotation
                     int rotation = e.getWheelRotation();
@@ -131,11 +175,8 @@ public class MapPanel extends JPanel {
                         }
                     }
 
-
-
                     parentScrollPane.getHorizontalScrollBar().setValue(x);
                     parentScrollPane.getVerticalScrollBar().setValue(y);
-
 
                     // Repaint the panel to update the view
                     revalidate(); // Ensures the scrollbars are updated if needed
@@ -192,11 +233,11 @@ public class MapPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        Color cellColor;
         for (int row = 1; row <= MAP_ROWS; row++) {
             for (int col = 1; col <= MAP_COLS; col++) {
                 // Determine the color of the cell based on its contents.
                 Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row); //mapItems[row][col];
-                Color cellColor;
                 if (item != null) {
                     if (item.equals(selectedItem)) {
                         cellColor = TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED);
@@ -209,6 +250,11 @@ public class MapPanel extends JPanel {
 
                 paintBlockContent(g, cellColor, item, col, row);
             }
+        }
+
+        if (selectedItem != null){
+            cellColor = TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED);
+            paintBlockContent(g, cellColor, selectedItem, selectedItem.getX(), selectedItem.getY());
         }
     }
 
@@ -255,7 +301,7 @@ public class MapPanel extends JPanel {
         }
     }
 
-    private void highlightBlock(Graphics g, int col, int row) {
+    public void highlightBlock(Graphics g, int col, int row) {
         if (col < 1 || col > 100 || row < 1 || row > 50) {
             return;
         }

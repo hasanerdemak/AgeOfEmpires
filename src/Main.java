@@ -16,6 +16,7 @@ public class Main {
                 throw new RuntimeException(e);
             }
             mainFrame.setVisible(true);
+            GameManager.getInstance().setMainFrame(mainFrame);
         });
 
         //GameManager.getInstance().startGame();

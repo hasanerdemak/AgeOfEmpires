@@ -37,5 +37,12 @@ public class MainFrame extends JFrame {
 
     }
 
+    public GamePanel getGamePanel() {
+        return gamePanel;
+    }
+
+    public void setGamePanel(GamePanel gamePanel) {
+        this.gamePanel = gamePanel;
+    }
 }
 
