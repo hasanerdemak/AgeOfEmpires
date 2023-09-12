@@ -5,6 +5,7 @@ import entities.humans.concretes.Worker;
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
 import gui.game.itemactionpanels.abstracts.AbstractItemActionsPanel;
+import gui.game.selectiondialogs.BuildSelectionDialog;
 import utils.MoveControlUtils;
 
 import javax.swing.*;
@@ -30,12 +31,16 @@ public class WorkerActionsPanel extends AbstractItemActionsPanel {
         constraints.gridy = 3;
         add(buildButton, constraints);
 
-
         var layout = (GridBagLayout) getLayout();
         layout.rowHeights = new int[getComponentCount() + 1];
         layout.rowWeights = new double[getComponentCount() + 1];
         layout.rowWeights[getComponentCount()] = Double.MIN_VALUE;
 
+        initializeButtonActionListeners();
+
+    }
+
+    private void initializeButtonActionListeners() {
         moveButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -64,6 +69,60 @@ public class WorkerActionsPanel extends AbstractItemActionsPanel {
             }
         });
 
+        attackButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Worker worker = (Worker) getItem();
+                worker.setCurrentState(Item.State.ATTACK);
+
+                var mapPanel = GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel();
+                Graphics g = mapPanel.getGraphics();
+                int workerX = worker.getX();
+                int workerY = worker.getY();
+                // todo upperLimit doğru mu kontrol et (doğru bloklar boyanıyor mu)
+                int upperLimit = (int) worker.getUpperAttackDistanceLimit();
+                for (int i = workerX - upperLimit; i <= workerX + upperLimit; i++) {
+                    for (int j = workerY - upperLimit; j <= workerY + upperLimit; j++) {
+
+                        if (i == workerX && j == workerY) continue;
+
+                        try {
+                            MoveControlUtils.checkAttackDistance(worker, i, j);
+                            mapPanel.highlightBlock(g, i, j);
+                        } catch (AgeOfEmpiresException ex) {
+
+                        }
+                    }
+                }
+            }
+        });
+
+
+        buildButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Worker worker = (Worker) getItem();
+                worker.setCurrentState(Item.State.BUILD);
+
+                var dialog = new BuildSelectionDialog((Frame) SwingUtilities.getWindowAncestor(WorkerActionsPanel.this));
+                dialog.setVisible(true);
+
+                String selectedBuildingName = dialog.getSelectedBuildingName();
+
+                try {
+                    var gameManager = GameManager.getInstance();
+                    gameManager.build(worker, selectedBuildingName);
+                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+                } catch (AgeOfEmpiresException ex) {
+                    JOptionPane.showMessageDialog(
+                            null,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
     }
 
     @Override

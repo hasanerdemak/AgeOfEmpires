@@ -1,10 +1,10 @@
 package gui.game;
 
 import entities.Item;
-import entities.buildings.concretes.MainBuilding;
 import entities.humans.abstracts.Human;
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
+import gui.game.selectiondialogs.ItemSelectionDialog;
 import interfaces.AttackableInterface;
 import utils.MoveControlUtils;
 
@@ -14,7 +14,6 @@ import javax.swing.border.SoftBevelBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,7 +21,7 @@ import java.util.Map;
 public class MapPanel extends JPanel {
     private static final int MAP_ROWS = 50;
     private static final int MAP_COLS = 100;
-    private static final int BLOCK_SIZE = 10; // Initial size of the blocks
+    private static final int BLOCK_SIZE = 12; // Initial size of the blocks
     private static final Map<TileKey, Color> TILE_COLORS = new HashMap<>();
 
     static {
@@ -34,7 +33,6 @@ public class MapPanel extends JPanel {
     }
 
     JScrollPane parentScrollPane;
-
     private int blockSize = BLOCK_SIZE; // Current size of the blocks
     private int xOffset = 0;
     private int yOffset = 0;
@@ -47,15 +45,6 @@ public class MapPanel extends JPanel {
     private int lastClickedCol;
     private int lastClickedRow;
 
-    private int lastX;
-    private int lastY;
-    private boolean isDragging;
-
-    // Set the boundaries to limit the map scrolling
-    private int minXOffset = 0;
-    private int minYOffset = 0;
-    private int maxXOffset;
-    private int maxYOffset;
 
     public MapPanel() {
         setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -67,7 +56,6 @@ public class MapPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.out.println(selectedItem);
                 int x = e.getX() - getXOffset();
                 int y = e.getY() - getYOffset();
 
@@ -77,6 +65,8 @@ public class MapPanel extends JPanel {
                 lastClickedRow = row;
                 System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
 
+                GamePanel gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
+
                 if (selectedItem != null) {
                     switch (selectedItem.getCurrentState()) {
                         case ATTACK -> {
@@ -84,13 +74,16 @@ public class MapPanel extends JPanel {
                                 AttackableInterface attackableItem = (AttackableInterface) selectedItem;
                                 MoveControlUtils.checkAttackDistance(attackableItem, col, row);
                                 GameManager.getInstance().attack(attackableItem, col, row);
-                                GameManager.getInstance().getMainFrame().getGamePanel().getItemActionsPanel().closePanels();
-                                selectedItem.setCurrentState(Item.State.IDLE);
-                                selectedItem = null;
-                                repaint();
+                                onTourPassed();
                                 return;
                             } catch (AgeOfEmpiresException ex) {
-                                throw new RuntimeException(ex);
+                                JOptionPane.showMessageDialog(
+                                        null,
+                                        ex.getMessage(),
+                                        "Error",
+                                        JOptionPane.ERROR_MESSAGE
+                                );
+                                return;
                             }
                         }
                         case MOVE -> {
@@ -98,59 +91,54 @@ public class MapPanel extends JPanel {
                                 Human human = (Human) selectedItem;
                                 MoveControlUtils.checkMoveDistance(human, col, row);
                                 GameManager.getInstance().move(human, col, row);
-                                GameManager.getInstance().getMainFrame().getGamePanel().getItemActionsPanel().closePanels();
-                                selectedItem.setCurrentState(Item.State.IDLE);
-                                selectedItem = null;
-                                repaint();
+                                onTourPassed();
                                 return;
                             } catch (AgeOfEmpiresException ex) {
                                 JOptionPane.showMessageDialog(
                                         null,
-                                        "An error occurred!",
+                                        ex.getMessage(),
                                         "Error",
                                         JOptionPane.ERROR_MESSAGE
                                 );
                                 return;
                             }
                         }
-                        case BUILD -> {
-
-
-                        }
                     }
 
                 }
-                    GamePanel gamePanel = (GamePanel) (getParent().getParent().getParent());
-                    var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
 
-                    // If there is more than one item, show the selection dialog
-                    if (items.size() > 1) {
-                        highlightBlock(getGraphics(), col, row);
-                        ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
-                        dialog.setVisible(true);
+                var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
 
-                        selectedItem = dialog.getSelectedItem();
-                        if (selectedItem != null) {
-                            gamePanel.getItemActionsPanel().openPanel(selectedItem);
-                        }
-                    } else if (items.size() == 1) {
-                        // If there is only one item, handle it directly
-                        selectedItem = items.get(0);
-                        // Handle the item as needed
-                    }
+                // If there is more than one item, show the selection dialog
+                if (items.size() > 1) {
+                    highlightBlock(getGraphics(), col, row);
+                    ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
+                    dialog.setVisible(true);
 
+                    selectedItem = dialog.getSelectedItem();
                     if (selectedItem != null) {
-                        highlightNeighbors(col, row);
                         gamePanel.getItemActionsPanel().openPanel(selectedItem);
-                    } else {
-                        gamePanel.getItemActionsPanel().closePanels();
                     }
+                } else if (items.size() == 1) {
+                    // If there is only one item, handle it directly
+                    selectedItem = items.get(0);
+                    // Handle the item as needed
+                } else {
+                    selectedItem = null;
+                }
+
+                if (selectedItem != null) {
+                    gamePanel.getItemActionsPanel().openPanel(selectedItem);
+                } else {
+                    gamePanel.getItemActionsPanel().closePanels();
+                }
 
                 //resetBlocks();
                 repaint();
             }
         });
 
+        /*
         addMouseWheelListener(new MouseAdapter() {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
@@ -185,6 +173,7 @@ public class MapPanel extends JPanel {
             }
         });
 
+         */
 
     }
 
@@ -229,6 +218,13 @@ public class MapPanel extends JPanel {
         return new Dimension(preferredWidth, preferredHeight);
     }
 
+    public void onTourPassed() {
+        GameManager.getInstance().getMainFrame().getGamePanel().getItemActionsPanel().closePanels();
+        selectedItem.setCurrentState(Item.State.IDLE);
+        selectedItem = null;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -252,7 +248,7 @@ public class MapPanel extends JPanel {
             }
         }
 
-        if (selectedItem != null){
+        if (selectedItem != null) {
             cellColor = TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED);
             paintBlockContent(g, cellColor, selectedItem, selectedItem.getX(), selectedItem.getY());
         }
@@ -285,20 +281,6 @@ public class MapPanel extends JPanel {
         }
 
         highlightedBlocks.clear();
-    }
-
-    private void highlightNeighbors(int col, int row) {
-        var g = getGraphics();
-
-        if (selectedItem == null || selectedItem.getCurrentState() == Item.State.IDLE) {
-            highlightBlock(g, col, row);
-        } else {
-            for (int i = col - 7; i <= col + 7; i++) {
-                for (int j = row - 7; j <= row + 7; j++) {
-                    highlightBlock(g, i, j);
-                }
-            }
-        }
     }
 
     public void highlightBlock(Graphics g, int col, int row) {

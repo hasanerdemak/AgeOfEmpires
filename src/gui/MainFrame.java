@@ -8,8 +8,8 @@ import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class MainFrame extends JFrame {
-    public static final int WIDTH = 1280;
-    public static final int HEIGHT = 720;
+    public static final int WIDTH = 1444;
+    public static final int HEIGHT = 777;
     private MainMenuPanel mainMenuPanel;
     private GamePanel gamePanel;
 

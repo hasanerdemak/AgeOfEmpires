@@ -27,7 +27,7 @@ public class GamePanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        mapPanel.setPreferredSize(new Dimension(1000, 600));
+        mapPanel.setPreferredSize(new Dimension(1000, 500));
         itemActionsPanel.setPreferredSize(new Dimension(200, 600));
 
         JScrollPane scrollPane = new JScrollPane(mapPanel);

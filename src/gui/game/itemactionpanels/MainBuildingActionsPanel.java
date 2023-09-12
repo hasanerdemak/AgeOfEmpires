@@ -2,9 +2,8 @@ package gui.game.itemactionpanels;
 
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
-import gui.game.ItemSelectionDialog;
-import gui.game.PurchaseSelectionDialog;
 import gui.game.itemactionpanels.abstracts.AbstractItemActionsPanel;
+import gui.game.selectiondialogs.PurchaseSelectionDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +22,8 @@ public class MainBuildingActionsPanel extends AbstractItemActionsPanel {
         add(purchaseButton, constraints);
 
         var layout = (GridBagLayout) getLayout();
-        layout.rowHeights = new int[getComponentCount()+1];
-        layout.rowWeights = new double[getComponentCount()+1];
+        layout.rowHeights = new int[getComponentCount() + 1];
+        layout.rowWeights = new double[getComponentCount() + 1];
         layout.rowWeights[getComponentCount()] = Double.MIN_VALUE;
 
         purchaseButton.addActionListener(new ActionListener() {
@@ -38,8 +37,14 @@ public class MainBuildingActionsPanel extends AbstractItemActionsPanel {
                 try {
                     var gameManager = GameManager.getInstance();
                     gameManager.purchase(gameManager.getGame().getCurrentPlayer(), selectedItemName);
+                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
                 } catch (AgeOfEmpiresException ex) {
-                    throw new RuntimeException(ex);
+                    JOptionPane.showMessageDialog(
+                            null,
+                            ex.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });

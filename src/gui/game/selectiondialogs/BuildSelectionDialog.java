@@ -1,27 +1,26 @@
-package gui.game;
+package gui.game.selectiondialogs;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PurchaseSelectionDialog extends JDialog {
+public class BuildSelectionDialog extends JDialog {
+    private String selectedBuildingName;
 
-    private String selectedItemName;
-
-    public PurchaseSelectionDialog(Frame parent) {
-        super(parent, "Select Item", true);
+    public BuildSelectionDialog(Frame parent) {
+        super(parent, "Select Building", true);
 
         ButtonGroup buttonGroup = new ButtonGroup();
         JPanel panel = new JPanel(new GridLayout(0, 1));
 
-        String[] itemNames = new String[]{"Worker", "Swordman", "Spearman", "Archer", "Cavalry", "Catapult"};
+        String[] itemNames = new String[]{"University", "Tower"};
         for (String itemName : itemNames) {
             JRadioButton radioButton = new JRadioButton(itemName);
             radioButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    selectedItemName = itemName;
+                    selectedBuildingName = itemName;
                 }
             });
             buttonGroup.add(radioButton);
@@ -43,7 +42,7 @@ public class PurchaseSelectionDialog extends JDialog {
         setResizable(false);
     }
 
-    public String getSelectedItemName() {
-        return selectedItemName;
+    public String getSelectedBuildingName() {
+        return selectedBuildingName;
     }
 }
