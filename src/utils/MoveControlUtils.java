@@ -3,6 +3,7 @@ package utils;
 import entities.Item;
 import entities.buildings.concretes.MainBuilding;
 import entities.humans.abstracts.Human;
+import entities.humans.concretes.Archer;
 import entities.humans.concretes.Catapult;
 import exceptions.AgeOfEmpiresException;
 import game.Game;
@@ -35,7 +36,7 @@ public class MoveControlUtils {
 
     public static <T extends ItemInterface & AttackableInterface> void checkAttackDistance(T callerItem, int x, int y) throws AgeOfEmpiresException {
         float distance;
-        if (callerItem instanceof Catapult) {
+        if (callerItem.getClass().equals(Catapult.class) || callerItem.getClass().equals(Archer.class)) {
             distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);
         } else {
             distance = DistanceUtils.getEuclideanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);
