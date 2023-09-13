@@ -219,7 +219,9 @@ public class MapPanel extends JPanel {
     }
 
     public void onTourPassed() {
-        GameManager.getInstance().getMainFrame().getGamePanel().getItemActionsPanel().closePanels();
+        var gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
+        gamePanel.getItemActionsPanel().closePanels();
+        gamePanel.refreshGameStatus();
         selectedItem.setCurrentState(Item.State.IDLE);
         selectedItem = null;
         repaint();

@@ -12,7 +12,7 @@ public class UniversityActionsPanel extends AbstractItemActionsPanel {
     JButton trainCavalryButton = new JButton("Train Cavalry");
     JButton trainCatapultButton = new JButton("Train Catapult");
 
-    public UniversityActionsPanel(){
+    public UniversityActionsPanel() {
         super();
 
         var constraints = getConstraints();
@@ -25,15 +25,25 @@ public class UniversityActionsPanel extends AbstractItemActionsPanel {
         add(trainCatapultButton, constraints);
 
         var layout = (GridBagLayout) getLayout();
-        layout.rowHeights = new int[getComponentCount()+1];
-        layout.rowWeights = new double[getComponentCount()+1];
+        layout.rowHeights = new int[getComponentCount() + 1];
+        layout.rowWeights = new double[getComponentCount() + 1];
         layout.rowWeights[getComponentCount()] = Double.MIN_VALUE;
     }
 
     @Override
     public void onPanelVisible(Item item) {
+        super.onPanelVisible(item);
         var university = (University) item;
-        String info = university.print_message() +
+
+        String info = item +
+                "\n" +
+                "Symbol: " + item.getSymbol() +
+                "\n" +
+                "x: " + item.getX() +
+                "\n" +
+                "y: " + item.getY() +
+                "\n" +
+                "life points: " + item.getLifePoints() +
                 "\n" +
                 "Infantry Training Count: " + university.getInfantryTrainingCount() +
                 "\n" +

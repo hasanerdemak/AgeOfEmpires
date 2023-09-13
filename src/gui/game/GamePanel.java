@@ -21,7 +21,7 @@ public class GamePanel extends JPanel {
         Game game = new Game(2);
         GameManager.getInstance().setGame(game);
         for (int i = 0; i < playerCount; i++) {
-            playerInfoPanels[i] = new PlayerInfoPanel(new Player(i, game, true));
+            playerInfoPanels[i] = new PlayerInfoPanel(game.getPlayer(i));
             playerInfoPanels[i].setPreferredSize(new Dimension(800 / playerCount, 100));
         }
 
@@ -52,6 +52,12 @@ public class GamePanel extends JPanel {
             rowPanel.add(panel);
         }
         return rowPanel;
+    }
+
+    public void refreshGameStatus(){
+        for (var playerInfoPanel: playerInfoPanels) {
+            playerInfoPanel.refreshLabels();
+        }
     }
 
 }

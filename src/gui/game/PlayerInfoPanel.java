@@ -49,4 +49,11 @@ public class PlayerInfoPanel extends JPanel {
         }
         return rowPanel;
     }
+
+    public void refreshLabels(){
+        populationLabel.setText("Population: " + (player.getWorkerCount() + player.getSoldierCount()) + "/" + player.populationLimit);
+        woodLabel.setText("Wood: " + player.getWood() + "  ");
+        goldLabel.setText("Gold: " + player.getGold() + "  ");
+        stoneLabel.setText("Stone: " + player.getStone() + "  ");
+    }
 }
