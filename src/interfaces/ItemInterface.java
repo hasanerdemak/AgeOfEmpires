@@ -1,5 +1,6 @@
 package interfaces;
 
+import entities.Item;
 import game.Player;
 
 public interface ItemInterface {
@@ -20,5 +21,7 @@ public interface ItemInterface {
     Player getOwnerPlayer();
 
     boolean checkIfAlive();
+
+    void setCurrentState(Item.State currentState);
 
 }

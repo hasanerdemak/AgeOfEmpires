@@ -117,7 +117,8 @@ public class MapPanel extends JPanel {
 
                     selectedItem = dialog.getSelectedItem();
                     if (selectedItem != null) {
-                        gamePanel.getItemActionsPanel().openPanel(selectedItem);
+                        gamePanel.getItemActionsPanel().setItem(selectedItem);
+                        gamePanel.getItemActionsPanel().onPanelVisible();
                     }
                 } else if (items.size() == 1) {
                     // If there is only one item, handle it directly
@@ -127,11 +128,8 @@ public class MapPanel extends JPanel {
                     selectedItem = null;
                 }
 
-                if (selectedItem != null) {
-                    gamePanel.getItemActionsPanel().openPanel(selectedItem);
-                } else {
-                    gamePanel.getItemActionsPanel().closePanels();
-                }
+                gamePanel.getItemActionsPanel().setItem(selectedItem);
+                gamePanel.getItemActionsPanel().onPanelVisible();
 
                 //resetBlocks();
                 repaint();
@@ -220,7 +218,8 @@ public class MapPanel extends JPanel {
 
     public void onTourPassed() {
         var gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
-        gamePanel.getItemActionsPanel().closePanels();
+        gamePanel.getItemActionsPanel().setItem(null);
+        gamePanel.getItemActionsPanel().onPanelVisible();
         gamePanel.refreshGameStatus();
         selectedItem.setCurrentState(Item.State.IDLE);
         selectedItem = null;

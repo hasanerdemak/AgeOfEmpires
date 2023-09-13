@@ -96,6 +96,7 @@ public abstract class Item implements ItemInterface {
         return currentState;
     }
 
+    @Override
     public void setCurrentState(State currentState) {
         this.currentState = currentState;
     }

@@ -3,8 +3,6 @@ package gui.game;
 import exceptions.AgeOfEmpiresException;
 import game.Game;
 import game.GameManager;
-import game.Player;
-import gui.game.itemactionpanels.ItemActionsPanel;
 
 import javax.swing.*;
 import java.awt.*;
