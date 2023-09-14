@@ -22,9 +22,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ItemActionsPanel extends JPanel {
+
     JButton purchaseButton = new JButton("purchase");
     JButton trainInfantryButton = new JButton("Train Infantry");
     JButton trainCavalryButton = new JButton("Train Cavalry");
@@ -32,23 +34,34 @@ public class ItemActionsPanel extends JPanel {
     JButton moveButton = new JButton("Move");
     JButton attackButton = new JButton("Attack");
     JButton buildButton = new JButton("Build");
-    HashMap<Class<?>, ArrayList<JButton>> itemButtons = new HashMap<>();
     private JTextArea infoTextArea = new JTextArea();
     private GridBagConstraints constraints = new GridBagConstraints();
-    private boolean isButtonsEnabled;
+    private HashMap<Class<?>, ArrayList<JButton>> itemButtons = new HashMap<>();
     private Item item;
     private ArrayList<JButton> buttons = new ArrayList<>();
     private ArrayList<JButton> visibleButtons = new ArrayList<>();
+    private boolean isButtonsEnabled;
 
     public ItemActionsPanel() {
-        setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        initializeLayout();
+        initializeButtons();
+        initializeItemButtonsHashMap();
+        initializeButtonsActionListeners();
+        onPanelVisible();
+    }
 
+    private void initializeLayout() {
+        setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);
         gridBagLayout.columnWidths = new int[]{0, 0};
         gridBagLayout.rowHeights = new int[]{0, 0}; // component + 1
         gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
         gridBagLayout.rowWeights = new double[]{0.0, Double.MIN_VALUE}; // component + 1
+
+        gridBagLayout.rowHeights = new int[9];//new int[getComponentCount() + 1];
+        gridBagLayout.rowWeights = new double[9];//new double[getComponentCount() + 1];
+        gridBagLayout.rowWeights[8] = Double.MIN_VALUE;
 
         constraints.anchor = GridBagConstraints.NORTH;
         //infoTextArea.setLineWrap(true);
@@ -65,7 +78,9 @@ public class ItemActionsPanel extends JPanel {
 
         constraints.gridy = 0;
         add(infoTextArea, constraints);
+    }
 
+    private void initializeButtons() {
         buttons.add(purchaseButton);
         buttons.add(trainInfantryButton);
         buttons.add(trainCavalryButton);
@@ -73,84 +88,21 @@ public class ItemActionsPanel extends JPanel {
         buttons.add(moveButton);
         buttons.add(attackButton);
         buttons.add(buildButton);
+
+        constraints.gridy = 1;
         for (var button : buttons) {
-            constraints.gridy++;
             add(button, constraints);
+            button.setVisible(false);
+            constraints.gridy++;
         }
-
-
-        var layout = (GridBagLayout) getLayout();
-        layout.rowHeights = new int[getComponentCount() + 1];
-        layout.rowWeights = new double[getComponentCount() + 1];
-        layout.rowWeights[getComponentCount()] = Double.MIN_VALUE;
-
-        initializeItemButtonsHashMap();
-        initializeButtonsActionListeners();
-
-        onPanelVisible();
-    }
-
-    public JTextArea getInfoTextArea() {
-        return infoTextArea;
-    }
-
-    public void setInfoTextArea(JTextArea infoTextArea) {
-        this.infoTextArea = infoTextArea;
-    }
-
-    public GridBagConstraints getConstraints() {
-        return constraints;
-    }
-
-    public void setConstraints(GridBagConstraints constraints) {
-        this.constraints = constraints;
-    }
-
-    public boolean isButtonsEnabled() {
-        return isButtonsEnabled;
-    }
-
-    public void setButtonsEnabled(boolean enabled) {
-        isButtonsEnabled = enabled;
-
-        for (var button : visibleButtons) {
-            button.setEnabled(enabled);
-        }
-    }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
     }
 
     private void initializeItemButtonsHashMap() {
-        ArrayList<JButton> buttonsForMainBuilding = new ArrayList<>();
-        buttonsForMainBuilding.add(purchaseButton);
-        itemButtons.put(MainBuilding.class, buttonsForMainBuilding);
-
-        ArrayList<JButton> buttonsForUniversity = new ArrayList<>();
-        buttonsForUniversity.add(trainInfantryButton);
-        buttonsForUniversity.add(trainCavalryButton);
-        buttonsForUniversity.add(trainCatapultButton);
-        itemButtons.put(University.class, buttonsForUniversity);
-
-        ArrayList<JButton> buttonsForTower = new ArrayList<>();
-        buttonsForTower.add(attackButton);
-        itemButtons.put(Tower.class, buttonsForTower);
-
-        ArrayList<JButton> buttonsForWorker = new ArrayList<>();
-        buttonsForWorker.add(moveButton);
-        buttonsForWorker.add(attackButton);
-        buttonsForWorker.add(buildButton);
-        itemButtons.put(Worker.class, buttonsForWorker);
-
-        ArrayList<JButton> buttonsForSoldier = new ArrayList<>();
-        buttonsForSoldier.add(moveButton);
-        buttonsForSoldier.add(attackButton);
-        itemButtons.put(Soldier.class, buttonsForSoldier);
+        itemButtons.put(MainBuilding.class, new ArrayList<>(Arrays.asList(purchaseButton)));
+        itemButtons.put(University.class, new ArrayList<>(Arrays.asList(trainInfantryButton, trainCavalryButton, trainCatapultButton)));
+        itemButtons.put(Tower.class, new ArrayList<>(Arrays.asList(attackButton)));
+        itemButtons.put(Worker.class, new ArrayList<>(Arrays.asList(moveButton, attackButton, buildButton)));
+        itemButtons.put(Soldier.class, new ArrayList<>(Arrays.asList(moveButton, attackButton)));
     }
 
     private void initializeButtonsActionListeners() {
@@ -167,12 +119,67 @@ public class ItemActionsPanel extends JPanel {
                     gameManager.purchase(gameManager.getGame().getCurrentPlayer(), selectedItemName);
                     gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
                 } catch (AgeOfEmpiresException ex) {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        trainInfantryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+
+                try {
+                    var gameManager = GameManager.getInstance();
+                    if (choice == JOptionPane.YES_OPTION) {
+                        gameManager.train(gameManager.getGame().getCurrentPlayer().getUniversity(), University.UnitType.INFANTRY);
+                    } else {
+                        return;
+                    }
+
+                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+                } catch (AgeOfEmpiresException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        trainCavalryButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+
+                try {
+                    var gameManager = GameManager.getInstance();
+                    if (choice == JOptionPane.YES_OPTION) {
+                        gameManager.train(gameManager.getGame().getCurrentPlayer().getUniversity(), University.UnitType.CAVALRY);
+                    } else {
+                        return;
+                    }
+
+                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+                } catch (AgeOfEmpiresException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        trainCatapultButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+
+                try {
+                    var gameManager = GameManager.getInstance();
+                    if (choice == JOptionPane.YES_OPTION) {
+                        gameManager.train(gameManager.getGame().getCurrentPlayer().getUniversity(), University.UnitType.CATAPULT);
+                    } else {
+                        return;
+                    }
+
+                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+                } catch (AgeOfEmpiresException ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -248,22 +255,53 @@ public class ItemActionsPanel extends JPanel {
                     gameManager.build(worker, selectedBuildingName);
                     gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
                 } catch (AgeOfEmpiresException ex) {
-                    JOptionPane.showMessageDialog(
-                            null,
-                            ex.getMessage(),
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
     }
 
-    public void onPanelVisible() {
-        setVisibleButtons();
+    public JTextArea getInfoTextArea() {
+        return infoTextArea;
+    }
 
-        var item = getItem();
+    public void setInfoTextArea(JTextArea infoTextArea) {
+        this.infoTextArea = infoTextArea;
+    }
+
+    public GridBagConstraints getConstraints() {
+        return constraints;
+    }
+
+    public void setConstraints(GridBagConstraints constraints) {
+        this.constraints = constraints;
+    }
+
+    public boolean isButtonsEnabled() {
+        return isButtonsEnabled;
+    }
+
+    public void setButtonsEnabled(boolean enabled) {
+        isButtonsEnabled = enabled;
+
+        for (var button : visibleButtons) {
+            button.setEnabled(enabled);
+        }
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+        onPanelVisible();
+    }
+
+    private void onPanelVisible() {
+        updateVisibleButtons();
+
         if (item == null) {
             infoTextArea.setVisible(false);
             return;
@@ -272,51 +310,35 @@ public class ItemActionsPanel extends JPanel {
         boolean isButtonsEnabled = GameManager.getInstance().getGame().getCurrentPlayer().equals(item.getOwnerPlayer());
         setButtonsEnabled(isButtonsEnabled);
 
-        String info = item +
-                "\n" +
-                "Symbol: " + item.getSymbol() +
-                "\n" +
-                "x: " + item.getX() +
-                "\n" +
-                "y: " + item.getY() +
-                "\n" +
-                "life points: " + item.getLifePoints();
+        String info = item.toString() + "\n" + "Symbol: " + item.getSymbol() + "\n" + "x: " + item.getX() + "\n" + "y: " + item.getY() + "\n" + "life points: " + item.getLifePoints();
 
-        if (item.getClass().equals(University.class)) {
-            var university = (University) item;
-            info += "\n" +
-                    "Infantry Training Count: " + university.getInfantryTrainingCount() +
-                    "\n" +
-                    "Cavalry Training Count: " + university.getCavalryTrainingCount() +
-                    "\n" +
-                    "Catapult Training Count: " + university.getCatapultTrainingCount();
+        if (item instanceof University university) {
+            info += "\n" + "Infantry Training Count: " + university.getInfantryTrainingCount() + "\n" + "Cavalry Training Count: " + university.getCavalryTrainingCount() + "\n" + "Catapult Training Count: " + university.getCatapultTrainingCount();
         }
 
         infoTextArea.setText(info);
         infoTextArea.setVisible(true);
     }
 
-    private void setVisibleButtons() {
-        // remove buttons
+    private void updateVisibleButtons() {
+
         for (var button : buttons) {
             button.setVisible(false);
             remove(button);
         }
 
-        // set visible buttons
         visibleButtons.clear();
-        if (getItem() != null) {
-            if (getItem() instanceof Soldier) {
+        if (item != null) {
+            if (item instanceof Soldier) {
                 visibleButtons.addAll(itemButtons.get(Soldier.class));
             } else {
-                visibleButtons.addAll(itemButtons.get(getItem().getClass()));
+                visibleButtons.addAll(itemButtons.get(item.getClass()));
             }
 
-            // add visible buttons
             constraints.gridy = 1;
             for (var button : visibleButtons) {
-                button.setVisible(true);
                 add(button, constraints);
+                button.setVisible(true);
                 constraints.gridy++;
             }
         }
