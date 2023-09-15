@@ -16,6 +16,7 @@ import utils.MoveControlUtils;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.Border;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -34,6 +35,7 @@ public class ItemActionsPanel extends JPanel {
     JButton moveButton = new JButton("Move");
     JButton attackButton = new JButton("Attack");
     JButton buildButton = new JButton("Build");
+    JButton passTheTourButton = new JButton("Pass The Tour");
     private JTextArea infoTextArea = new JTextArea();
     private GridBagConstraints constraints = new GridBagConstraints();
     private HashMap<Class<?>, ArrayList<JButton>> itemButtons = new HashMap<>();
@@ -55,22 +57,17 @@ public class ItemActionsPanel extends JPanel {
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);
         gridBagLayout.columnWidths = new int[]{0, 0};
-        gridBagLayout.rowHeights = new int[]{0, 0}; // component + 1
         gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-        gridBagLayout.rowWeights = new double[]{0.0, Double.MIN_VALUE}; // component + 1
-
-        gridBagLayout.rowHeights = new int[9];//new int[getComponentCount() + 1];
-        gridBagLayout.rowWeights = new double[9];//new double[getComponentCount() + 1];
-        gridBagLayout.rowWeights[8] = Double.MIN_VALUE;
+        gridBagLayout.rowHeights = new int[11];//new int[getComponentCount() + 1];
+        gridBagLayout.rowWeights = new double[11];//new double[getComponentCount() + 1];
+        gridBagLayout.rowWeights[9] = Double.MIN_VALUE;
 
         constraints.anchor = GridBagConstraints.NORTH;
-        //infoTextArea.setLineWrap(true);
         infoTextArea.setWrapStyleWord(true);
         infoTextArea.setEditable(false);
         infoTextArea.setBackground(new Color(195, 255, 247, 255));
 
-        TitledBorder title;
-        title = BorderFactory.createTitledBorder("Info");
+        TitledBorder title = BorderFactory.createTitledBorder("Info");
         infoTextArea.setBorder(title);
 
         constraints.fill = GridBagConstraints.BOTH;
@@ -78,6 +75,9 @@ public class ItemActionsPanel extends JPanel {
 
         constraints.gridy = 0;
         add(infoTextArea, constraints);
+
+        constraints.gridy = 10;
+        add(passTheTourButton, constraints);
     }
 
     private void initializeButtons() {
@@ -257,6 +257,22 @@ public class ItemActionsPanel extends JPanel {
                 } catch (AgeOfEmpiresException ex) {
                     JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
+            }
+        });
+
+        passTheTourButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Pass the Tour", JOptionPane.YES_NO_OPTION);
+
+                var gameManager = GameManager.getInstance();
+                if (choice == JOptionPane.YES_OPTION) {
+                    gameManager.getGame().getCurrentPlayer().pass();
+                } else {
+                    return;
+                }
+
+                gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
             }
         });
 

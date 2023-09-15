@@ -218,8 +218,10 @@ public class MapPanel extends JPanel {
         var gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
         gamePanel.getItemActionsPanel().setItem(null);
         gamePanel.refreshGameStatus();
-        selectedItem.setCurrentState(Item.State.IDLE);
-        selectedItem = null;
+        if (selectedItem != null){
+            selectedItem.setCurrentState(Item.State.IDLE);
+            selectedItem = null;
+        }
         repaint();
     }
 
