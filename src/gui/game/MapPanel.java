@@ -2,6 +2,7 @@ package gui.game;
 
 import entities.Item;
 import entities.humans.abstracts.Human;
+import entities.humans.concretes.Archer;
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
 import gui.game.selectiondialogs.ItemSelectionDialog;
@@ -56,81 +57,7 @@ public class MapPanel extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int x = e.getX() - getXOffset();
-                int y = e.getY() - getYOffset();
-
-                int col = x / getBlockSize();
-                int row = y / getBlockSize();
-                lastClickedCol = col;
-                lastClickedRow = row;
-                System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
-
-                GamePanel gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
-
-                if (selectedItem != null) {
-                    switch (selectedItem.getCurrentState()) {
-                        case ATTACK -> {
-                            try {
-                                AttackableInterface attackableItem = (AttackableInterface) selectedItem;
-                                MoveControlUtils.checkAttackDistance(attackableItem, col, row);
-                                GameManager.getInstance().attack(attackableItem, col, row);
-                                onTourPassed();
-                                return;
-                            } catch (AgeOfEmpiresException ex) {
-                                JOptionPane.showMessageDialog(
-                                        null,
-                                        ex.getMessage(),
-                                        "Error",
-                                        JOptionPane.ERROR_MESSAGE
-                                );
-                                return;
-                            }
-                        }
-                        case MOVE -> {
-                            try {
-                                Human human = (Human) selectedItem;
-                                MoveControlUtils.checkMoveDistance(human, col, row);
-                                GameManager.getInstance().move(human, col, row);
-                                onTourPassed();
-                                return;
-                            } catch (AgeOfEmpiresException ex) {
-                                JOptionPane.showMessageDialog(
-                                        null,
-                                        ex.getMessage(),
-                                        "Error",
-                                        JOptionPane.ERROR_MESSAGE
-                                );
-                                return;
-                            }
-                        }
-                    }
-
-                }
-
-                var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
-
-                // If there is more than one item, show the selection dialog
-                if (items.size() > 1) {
-                    highlightBlock(getGraphics(), col, row);
-                    ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
-                    dialog.setVisible(true);
-
-                    selectedItem = dialog.getSelectedItem();
-                    if (selectedItem != null) {
-                        gamePanel.getItemActionsPanel().setItem(selectedItem);
-                    }
-                } else if (items.size() == 1) {
-                    // If there is only one item, handle it directly
-                    selectedItem = items.get(0);
-                    // Handle the item as needed
-                } else {
-                    selectedItem = null;
-                }
-
-                gamePanel.getItemActionsPanel().setItem(selectedItem);
-
-                //resetBlocks();
-                repaint();
+                handleMouseClick(e);
             }
         });
 
@@ -171,6 +98,87 @@ public class MapPanel extends JPanel {
 
          */
 
+    }
+
+    private void handleMouseClick(MouseEvent e) {
+        int x = e.getX() - getXOffset();
+        int y = e.getY() - getYOffset();
+
+        int col = x / getBlockSize();
+        int row = y / getBlockSize();
+        lastClickedCol = col;
+        lastClickedRow = row;
+        System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
+
+        GamePanel gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
+
+        if (selectedItem != null && selectedItem.getCurrentState() != Item.State.IDLE) {
+            handleSelectedItemAction(col, row);
+        } else {
+            handleNoSelectedItemAction(col, row, gamePanel);
+        }
+
+        gamePanel.getItemActionsPanel().setItem(selectedItem);
+        repaint();
+    }
+
+    private void handleSelectedItemAction(int col, int row) {
+        switch (selectedItem.getCurrentState()) {
+            case ATTACK -> handleAttackAction(col, row);
+            case MOVE -> handleMoveAction(col, row);
+        }
+    }
+
+    private void handleAttackAction(int col, int row) {
+        try {
+            AttackableInterface attackableItem = (AttackableInterface) selectedItem;
+            GameManager.getInstance().attack(attackableItem, col, row);
+            onTourPassed();
+        } catch (AgeOfEmpiresException ex) {
+            showErrorDialog(ex.getMessage());
+        }
+    }
+
+    private void handleMoveAction(int col, int row) {
+        try {
+            Human human = (Human) selectedItem;
+            GameManager.getInstance().move(human, col, row);
+            onTourPassed();
+        } catch (AgeOfEmpiresException ex) {
+            showErrorDialog(ex.getMessage());
+        }
+    }
+
+    private void handleNoSelectedItemAction(int col, int row, GamePanel gamePanel) {
+        var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
+
+        if (items.size() > 1) {
+            handleMultipleItemsSelection(col, row, gamePanel, items);
+        } else if (items.size() == 1) {
+            handleSingleItemSelectedAction(items.get(0));
+        } else {
+            selectedItem = null;
+        }
+    }
+
+    private void handleMultipleItemsSelection(int col, int row, GamePanel gamePanel, ArrayList<Item> items) {
+        highlightBlock(getGraphics(), col, row);
+        ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
+        dialog.setVisible(true);
+
+        selectedItem = dialog.getSelectedItem();
+        if (selectedItem != null) {
+            gamePanel.getItemActionsPanel().setItem(selectedItem);
+        }
+    }
+
+    private void handleSingleItemSelectedAction(Item item) {
+        selectedItem = item;
+        // Handle the item as needed
+    }
+
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
     public int getBlockSize() {
@@ -233,24 +241,72 @@ public class MapPanel extends JPanel {
         for (int row = 1; row <= MAP_ROWS; row++) {
             for (int col = 1; col <= MAP_COLS; col++) {
                 // Determine the color of the cell based on its contents.
-                Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row); //mapItems[row][col];
-                if (item != null) {
-                    if (item.equals(selectedItem)) {
+                ArrayList<Item> items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row); //mapItems[row][col];
+                if (items.size() != 0) {
+                    if (items.contains(selectedItem)) {
                         cellColor = TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED);
+                        paintBlockContent(g, cellColor, selectedItem, col, row);
                     } else {
                         cellColor = TILE_COLORS.get(TileKey.OCCUPIED);
+                        paintBlockContent(g, cellColor, items.get(0), col, row);
                     }
                 } else {
                     cellColor = TILE_COLORS.get(TileKey.EMPTY);
+                    paintBlockContent(g, cellColor, null, col, row);
                 }
-
-                paintBlockContent(g, cellColor, item, col, row);
             }
         }
 
-        if (selectedItem != null) {
-            cellColor = TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED);
-            paintBlockContent(g, cellColor, selectedItem, selectedItem.getX(), selectedItem.getY());
+        if (selectedItem != null){
+            if (selectedItem.getCurrentState() == Item.State.MOVE){
+                paintMovableBlocks((Human) selectedItem);
+            } else if (selectedItem.getCurrentState() == Item.State.ATTACK){
+                paintAttackableBlocks((AttackableInterface) selectedItem);
+            }
+        }
+    }
+
+    public void paintMovableBlocks(Human human){
+        if (human == null) return;
+
+        Graphics g = getGraphics();
+        int humanX = human.getX();
+        int humanY = human.getY();
+        int speed = human.getMovementSpeed();
+        for (int i = Math.max(1, humanX - speed); i <= Math.min(100, humanX + speed); i++) {
+            for (int j = Math.max(1, humanY - speed); j <= Math.min(50, humanY + speed); j++) {
+                if (i == humanX && j == humanY) continue;
+
+                try {
+                    MoveControlUtils.checkMoveDistance(human, i, j);
+                    highlightBlock(g, i, j);
+                } catch (AgeOfEmpiresException ex) {
+                    // Handle the exception if needed
+                }
+            }
+        }
+    }
+
+    public void paintAttackableBlocks(AttackableInterface attackableItem){
+
+        Graphics g = getGraphics();
+        int attackableItemX = attackableItem.getX();
+        int attackableItemY = attackableItem.getY();
+        int upperLimit = (int) attackableItem.getUpperAttackDistanceLimit();
+        boolean isArcher = attackableItem instanceof Archer;
+        for (int i = Math.max(1, attackableItemX - upperLimit); i <= Math.min(100, attackableItemX + upperLimit); i++) {
+            for (int j = Math.max(1, attackableItemY - upperLimit); j <= Math.min(50, attackableItemY + upperLimit); j++) {
+                if (i == attackableItemX && j == attackableItemY) continue;
+
+                if (isArcher) ((Archer) attackableItem).makeAttackAdjustments(i, j);
+
+                try {
+                    MoveControlUtils.checkAttackDistance(attackableItem, i, j);
+                    highlightBlock(g, i, j);
+                } catch (AgeOfEmpiresException ex) {
+                    // Handle the exception if needed
+                }
+            }
         }
     }
 

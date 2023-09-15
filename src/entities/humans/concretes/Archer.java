@@ -1,13 +1,14 @@
 package entities.humans.concretes;
 
-import entities.buildings.abstracts.Building;
 import entities.Item;
+import entities.Resources;
+import entities.buildings.abstracts.Building;
 import entities.buildings.concretes.University;
 import entities.humans.abstracts.Human;
 import entities.humans.abstracts.Soldier;
-import game.Player;
-import entities.Resources;
 import exceptions.AgeOfEmpiresException;
+import game.Player;
+import utils.DistanceUtils;
 
 public class Archer extends Soldier {
     private final float lowerArrowThrowDistance = 2;
@@ -15,18 +16,15 @@ public class Archer extends Soldier {
     private Weapon currentWeapon = Weapon.BOW;
 
     public Archer() {
-        super(5, new Resources(5, 2, 0),
-                2, 2, 1, (float) Math.sqrt(2));
+        super(5, new Resources(5, 2, 0), 2, 2, 1, (float) Math.sqrt(2));
     }
 
     public Archer(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 5, new Resources(5, 2, 0),
-                2, 2, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, 5, new Resources(5, 2, 0), 2, 2, 1, (float) Math.sqrt(2));
     }
 
     public Archer(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, new Resources(5, 2, 0),
-                2, 2, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, lifePoints, new Resources(5, 2, 0), 2, 2, 1, (float) Math.sqrt(2));
     }
 
     @Override
@@ -56,6 +54,10 @@ public class Archer extends Soldier {
         return 0;
     }
 
+    public Weapon getCurrentWeapon() {
+        return currentWeapon;
+    }
+
     @Override
     public void makeAttackAdjustments(int x, int y) {
         chooseWeapon(x, y);
@@ -72,7 +74,7 @@ public class Archer extends Soldier {
     }
 
     private void chooseWeapon(int x, int y) {
-        if (Math.abs(this.getX() - x) == 1 || Math.abs(this.getY() - y) == 1) {
+        if (DistanceUtils.getEuclideanDistanceBetweenCoordinates(this.getX(), this.getY(), x, y) <= Math.sqrt(2)) {
             currentWeapon = Weapon.SWORD;
         } else {
             currentWeapon = Weapon.BOW;
@@ -84,9 +86,8 @@ public class Archer extends Soldier {
         return "O";
     }
 
-    private enum Weapon {
-        BOW,
-        SWORD
+    public enum Weapon {
+        BOW, SWORD
     }
 
 }

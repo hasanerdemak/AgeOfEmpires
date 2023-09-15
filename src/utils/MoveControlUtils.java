@@ -36,7 +36,8 @@ public class MoveControlUtils {
 
     public static <T extends ItemInterface & AttackableInterface> void checkAttackDistance(T callerItem, int x, int y) throws AgeOfEmpiresException {
         float distance;
-        if (callerItem.getClass().equals(Catapult.class) || callerItem.getClass().equals(Archer.class)) {
+        if (callerItem.getClass().equals(Catapult.class) ||
+                (callerItem.getClass().equals(Archer.class) && ((Archer) callerItem).getCurrentWeapon() == Archer.Weapon.BOW)) {
             distance = DistanceUtils.getManhattanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);
         } else {
             distance = DistanceUtils.getEuclideanDistanceBetweenCoordinates(callerItem.getX(), callerItem.getY(), x, y);

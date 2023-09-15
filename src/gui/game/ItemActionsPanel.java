@@ -6,6 +6,7 @@ import entities.buildings.concretes.Tower;
 import entities.buildings.concretes.University;
 import entities.humans.abstracts.Human;
 import entities.humans.abstracts.Soldier;
+import entities.humans.concretes.Archer;
 import entities.humans.concretes.Worker;
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
@@ -16,12 +17,9 @@ import utils.MoveControlUtils;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -106,176 +104,93 @@ public class ItemActionsPanel extends JPanel {
     }
 
     private void initializeButtonsActionListeners() {
-        purchaseButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                var dialog = new PurchaseSelectionDialog((Frame) SwingUtilities.getWindowAncestor(ItemActionsPanel.this));
-                dialog.setVisible(true);
+        purchaseButton.addActionListener(e -> performPurchaseAction());
+        trainInfantryButton.addActionListener(e -> performTrainAction(University.UnitType.INFANTRY));
+        trainCavalryButton.addActionListener(e -> performTrainAction(University.UnitType.CAVALRY));
+        trainCatapultButton.addActionListener(e -> performTrainAction(University.UnitType.CATAPULT));
+        moveButton.addActionListener(e -> performMoveAction());
+        attackButton.addActionListener(e -> performAttackAction());
+        buildButton.addActionListener(e -> performBuildAction());
+        passTheTourButton.addActionListener(e -> performPassTheTourAction());
+    }
 
-                String selectedItemName = dialog.getSelectedItemName();
+    private void performPurchaseAction() {
+        var dialog = new PurchaseSelectionDialog((Frame) SwingUtilities.getWindowAncestor(ItemActionsPanel.this));
+        dialog.setVisible(true);
 
-                try {
-                    var gameManager = GameManager.getInstance();
-                    gameManager.purchase(gameManager.getGame().getCurrentPlayer(), selectedItemName);
-                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
-                } catch (AgeOfEmpiresException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+        String selectedItemName = dialog.getSelectedItemName();
+
+        try {
+            var gameManager = GameManager.getInstance();
+            gameManager.purchase(gameManager.getGame().getCurrentPlayer(), selectedItemName);
+            gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+        } catch (AgeOfEmpiresException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void performTrainAction(University.UnitType unitType) {
+        int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+
+        try {
+            var gameManager = GameManager.getInstance();
+            if (choice == JOptionPane.YES_OPTION) {
+                gameManager.train(gameManager.getGame().getCurrentPlayer().getUniversity(), unitType);
+            } else {
+                return;
             }
-        });
 
-        trainInfantryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+            gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+        } catch (AgeOfEmpiresException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-                try {
-                    var gameManager = GameManager.getInstance();
-                    if (choice == JOptionPane.YES_OPTION) {
-                        gameManager.train(gameManager.getGame().getCurrentPlayer().getUniversity(), University.UnitType.INFANTRY);
-                    } else {
-                        return;
-                    }
+    private void performMoveAction() {
+        Human human = (Human) getItem();
+        human.setCurrentState(Item.State.MOVE);
 
-                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
-                } catch (AgeOfEmpiresException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
+        var mapPanel = GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel();
+        mapPanel.paintMovableBlocks(human);
+    }
 
-        trainCavalryButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+    private void performAttackAction() {
+        AttackableInterface attackableItem = (AttackableInterface) getItem();
+        attackableItem.setCurrentState(Item.State.ATTACK);
 
-                try {
-                    var gameManager = GameManager.getInstance();
-                    if (choice == JOptionPane.YES_OPTION) {
-                        gameManager.train(gameManager.getGame().getCurrentPlayer().getUniversity(), University.UnitType.CAVALRY);
-                    } else {
-                        return;
-                    }
+        var mapPanel = GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel();
+        mapPanel.paintAttackableBlocks(attackableItem);
+    }
 
-                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
-                } catch (AgeOfEmpiresException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
+    private void performBuildAction() {
+        Worker worker = (Worker) getItem();
+        worker.setCurrentState(Item.State.BUILD);
 
-        trainCatapultButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Confirmation", JOptionPane.YES_NO_OPTION);
+        var dialog = new BuildSelectionDialog((Frame) SwingUtilities.getWindowAncestor(ItemActionsPanel.this));
+        dialog.setVisible(true);
 
-                try {
-                    var gameManager = GameManager.getInstance();
-                    if (choice == JOptionPane.YES_OPTION) {
-                        gameManager.train(gameManager.getGame().getCurrentPlayer().getUniversity(), University.UnitType.CATAPULT);
-                    } else {
-                        return;
-                    }
+        String selectedBuildingName = dialog.getSelectedBuildingName();
 
-                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
-                } catch (AgeOfEmpiresException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
+        try {
+            var gameManager = GameManager.getInstance();
+            gameManager.build(worker, selectedBuildingName);
+            gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+        } catch (AgeOfEmpiresException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
-        moveButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Human human = (Human) getItem();
-                human.setCurrentState(Item.State.MOVE);
+    private void performPassTheTourAction() {
+        int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Pass the Tour", JOptionPane.YES_NO_OPTION);
 
-                var mapPanel = GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel();
-                Graphics g = mapPanel.getGraphics();
-                int humanX = human.getX();
-                int humanY = human.getY();
-                int speed = human.getMovementSpeed();
-                for (int i = humanX - speed; i <= humanX + speed; i++) {
-                    for (int j = humanY - speed; j <= humanY + speed; j++) {
+        var gameManager = GameManager.getInstance();
+        if (choice == JOptionPane.YES_OPTION) {
+            gameManager.getGame().getCurrentPlayer().pass();
+        } else {
+            return;
+        }
 
-                        if (i == humanX && j == humanY) continue;
-
-                        try {
-                            MoveControlUtils.checkMoveDistance(human, i, j);
-                            mapPanel.highlightBlock(g, i, j);
-                        } catch (AgeOfEmpiresException ex) {
-
-                        }
-                    }
-                }
-            }
-        });
-
-        attackButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AttackableInterface attackableItem = (AttackableInterface) getItem();
-                attackableItem.setCurrentState(Item.State.ATTACK);
-
-                var mapPanel = GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel();
-                Graphics g = mapPanel.getGraphics();
-                int attackableItemX = attackableItem.getX();
-                int attackableItemY = attackableItem.getY();
-                // todo upperLimit doğru mu kontrol et (doğru bloklar boyanıyor mu)
-                int upperLimit = (int) attackableItem.getUpperAttackDistanceLimit();
-                for (int i = attackableItemX - upperLimit; i <= attackableItemX + upperLimit; i++) {
-                    for (int j = attackableItemY - upperLimit; j <= attackableItemY + upperLimit; j++) {
-
-                        if (i == attackableItemX && j == attackableItemY) continue;
-
-                        try {
-                            MoveControlUtils.checkAttackDistance(attackableItem, i, j);
-                            mapPanel.highlightBlock(g, i, j);
-                        } catch (AgeOfEmpiresException ex) {
-
-                        }
-                    }
-                }
-            }
-        });
-
-        buildButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Worker worker = (Worker) getItem();
-                worker.setCurrentState(Item.State.BUILD);
-
-                var dialog = new BuildSelectionDialog((Frame) SwingUtilities.getWindowAncestor(ItemActionsPanel.this));
-                dialog.setVisible(true);
-
-                String selectedBuildingName = dialog.getSelectedBuildingName();
-
-                try {
-                    var gameManager = GameManager.getInstance();
-                    gameManager.build(worker, selectedBuildingName);
-                    gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
-                } catch (AgeOfEmpiresException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        });
-
-        passTheTourButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int choice = JOptionPane.showConfirmDialog(null, "Are you sure?", "Pass the Tour", JOptionPane.YES_NO_OPTION);
-
-                var gameManager = GameManager.getInstance();
-                if (choice == JOptionPane.YES_OPTION) {
-                    gameManager.getGame().getCurrentPlayer().pass();
-                } else {
-                    return;
-                }
-
-                gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
-            }
-        });
-
+        gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
     }
 
     public JTextArea getInfoTextArea() {
