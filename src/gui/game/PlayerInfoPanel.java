@@ -4,7 +4,6 @@ import game.Player;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import javax.swing.border.SoftBevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -120,14 +119,13 @@ public class PlayerInfoPanel extends JPanel {
             transitionStartTime = currentTime;
             isTransitionReversed = !isTransitionReversed;
         } else {
-            if (!isTransitionReversed){
-                Color newColor = interpolateColor(originalColor, highlightedColor, progress);
-                setBorderAndBackgroundColor(newColor);
+            Color newColor;
+            if (!isTransitionReversed) {
+                newColor = interpolateColor(originalColor, highlightedColor, progress);
+            } else {
+                newColor = interpolateColor(highlightedColor, originalColor, progress);
             }
-            else {
-                Color newColor = interpolateColor(highlightedColor, originalColor, progress);
-                setBorderAndBackgroundColor(newColor);
-            }
+            setBorderAndBackgroundColor(newColor);
 
         }
     }
