@@ -1,6 +1,7 @@
 package interfaces;
 
 import game.Game;
+import game.GameManager;
 import utils.MoveControlUtils;
 import entities.Item;
 import entities.humans.concretes.Spearman;
@@ -28,7 +29,7 @@ public interface AttackableInterface extends ItemInterface {
 
     default void defend(int x, int y) {
         try {
-            if (Game.checkPlayerTurn(getOwnerPlayer())) {
+            if (GameManager.getInstance().getGame().checkPlayerTurn(getOwnerPlayer())) {
                 throw new AgeOfEmpiresException(getOwnerPlayer() + " cannot defend himself without being attacked.");
             }
             // Check distance

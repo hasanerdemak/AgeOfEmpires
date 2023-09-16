@@ -7,6 +7,7 @@ import entities.humans.concretes.Archer;
 import entities.humans.concretes.Catapult;
 import exceptions.AgeOfEmpiresException;
 import game.Game;
+import game.GameManager;
 import game.Player;
 import interfaces.AttackableInterface;
 import interfaces.ItemInterface;
@@ -19,7 +20,7 @@ public class MoveControlUtils {
             throw new AgeOfEmpiresException("The game is already over. " + player + " cannot make a move.");
         }
         // Check if it is the player's turn
-        if (!Game.checkPlayerTurn(player)) {
+        if (!GameManager.getInstance().getGame().checkPlayerTurn(player)) {
             throw new AgeOfEmpiresException("This is not the " + player + "'s turn.");
         }
     }

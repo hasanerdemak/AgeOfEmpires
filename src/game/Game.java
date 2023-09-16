@@ -45,7 +45,7 @@ public class Game implements GameInterface {
 
     }
 
-    public static boolean checkPlayerTurn(Player player) throws AgeOfEmpiresException {
+    public boolean checkPlayerTurn(Player player) throws AgeOfEmpiresException {
         var game = player.getCurrentGame();
         return game.getPlayer(game.getPlayerTurnCounter()).equals(player);
     }
