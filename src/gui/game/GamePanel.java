@@ -3,9 +3,12 @@ package gui.game;
 import exceptions.AgeOfEmpiresException;
 import game.Game;
 import game.GameManager;
+import gui.MainFrame;
 import utils.GameColors;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
@@ -22,7 +25,7 @@ public class GamePanel extends JPanel {
         Color[] playerColors = {GameColors.PLAYER1_COLOR, GameColors.PLAYER2_COLOR, GameColors.PLAYER3_COLOR, GameColors.PLAYER4_COLOR};
         for (int i = 0; i < playerCount; i++) {
             playerInfoPanels[i] = new PlayerInfoPanel(game.getPlayer(i), playerColors[i]);
-            playerInfoPanels[i].setPreferredSize(new Dimension(800 / playerCount, 100));
+            playerInfoPanels[i].setPreferredSize(new Dimension(300, 100));
         }
 
         setLayout(new BorderLayout());
@@ -50,6 +53,7 @@ public class GamePanel extends JPanel {
 
     private JPanel createPanelRow(JPanel[] panels) {
         JPanel rowPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        rowPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
         for (JPanel panel : panels) {
             rowPanel.add(panel);
         }

@@ -46,11 +46,20 @@ public class PlayerInfoPanel extends JPanel {
         goldLabel = new JLabel("Gold: " + player.getGold() + "  ");
         stoneLabel = new JLabel("Stone: " + player.getStone() + "  ");
 
+        Font font = new Font("SansSerif", Font.BOLD, 15);
+        playerIDLabel.setFont(font);
+        populationLabel.setFont(font);
+        woodLabel.setFont(font);
+        goldLabel.setFont(font);
+        stoneLabel.setFont(font);
+
         // Add components to the panel with proper constraints
         add(playerIDLabel, constraints);
+        playerIDLabel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 
         constraints.gridy = 1;
         add(populationLabel, constraints);
+        populationLabel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 
         constraints.gridy = 2;
         JPanel rowPanel = createLabelRow(new JLabel[]{woodLabel, goldLabel, stoneLabel});
@@ -74,6 +83,7 @@ public class PlayerInfoPanel extends JPanel {
     private JPanel createLabelRow(JLabel[] labels) {
         JPanel rowPanel = new JPanel(new GridLayout(1, labels.length));
         for (JLabel label : labels) {
+            label.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
             rowPanel.add(label);
         }
         return rowPanel;

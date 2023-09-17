@@ -69,7 +69,7 @@ public class ItemActionsPanel extends JPanel {
         infoTextArea.setBorder(title);
 
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(5, 0, 5, 0);
+        constraints.insets = new Insets(5, 5, 5, 5);
 
         constraints.gridy = 0;
         add(infoTextArea, constraints);

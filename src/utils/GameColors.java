@@ -10,7 +10,7 @@ public class GameColors {
     public static final Color PLAYER4_COLOR = new Color(255, 140, 0); // Orange
 
     // Tile Colors
-    public static final Color EMPTY_TILE_COLOR = Color.LIGHT_GRAY;
+    public static final Color EMPTY_TILE_COLOR = new Color(240, 240, 240);
     public static final Color HIGHLIGHTED_TILE_COLOR = Color.GREEN;
     public static final Color OCCUPIED_TILE_COLOR = Color.DARK_GRAY;
     public static final Color OCCUPIED_HIGHLIGHTED_TILE_COLOR = Color.YELLOW;
