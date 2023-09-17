@@ -3,6 +3,7 @@ package gui.game;
 import exceptions.AgeOfEmpiresException;
 import game.Game;
 import game.GameManager;
+import utils.GameColors;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,14 +12,14 @@ public class GamePanel extends JPanel {
     private MapPanel mapPanel;
     private ItemActionsPanel itemActionsPanel;
     private PlayerInfoPanel[] playerInfoPanels;
-    Color[] playerColors = {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW};
 
     public GamePanel(int playerCount) throws AgeOfEmpiresException {
         mapPanel = new MapPanel();
         itemActionsPanel = new ItemActionsPanel();
         playerInfoPanels = new PlayerInfoPanel[playerCount];
-        Game game = new Game(2);
+        Game game = new Game(playerCount);
         GameManager.getInstance().setGame(game);
+        Color[] playerColors = {GameColors.PLAYER1_COLOR, GameColors.PLAYER2_COLOR, GameColors.PLAYER3_COLOR, GameColors.PLAYER4_COLOR};
         for (int i = 0; i < playerCount; i++) {
             playerInfoPanels[i] = new PlayerInfoPanel(game.getPlayer(i), playerColors[i]);
             playerInfoPanels[i].setPreferredSize(new Dimension(800 / playerCount, 100));
@@ -55,15 +56,14 @@ public class GamePanel extends JPanel {
         return rowPanel;
     }
 
-    public void refreshGameStatus(){
-        for (var playerInfoPanel: playerInfoPanels) {
+    public void refreshGameStatus() {
+        for (var playerInfoPanel : playerInfoPanels) {
             playerInfoPanel.refreshLabels();
 
             try {
-                if (GameManager.getInstance().getGame().checkPlayerTurn(playerInfoPanel.getPlayer())){
+                if (GameManager.getInstance().getGame().checkPlayerTurn(playerInfoPanel.getPlayer())) {
                     playerInfoPanel.highlightPanel();
-                }
-                else {
+                } else {
                     playerInfoPanel.resetPanelHighlighting();
                 }
             } catch (AgeOfEmpiresException e) {

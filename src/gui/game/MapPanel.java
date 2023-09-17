@@ -7,6 +7,7 @@ import exceptions.AgeOfEmpiresException;
 import game.GameManager;
 import gui.game.selectiondialogs.ItemSelectionDialog;
 import interfaces.AttackableInterface;
+import utils.GameColors;
 import utils.MoveControlUtils;
 
 import javax.swing.*;
@@ -23,15 +24,6 @@ public class MapPanel extends JPanel {
     private static final int MAP_ROWS = 50;
     private static final int MAP_COLS = 100;
     private static final int BLOCK_SIZE = 12; // Initial size of the blocks
-    private static final Map<TileKey, Color> TILE_COLORS = new HashMap<>();
-
-    static {
-        TILE_COLORS.put(TileKey.EMPTY, Color.WHITE);
-        TILE_COLORS.put(TileKey.HIGHLIGHTED, Color.RED);
-        TILE_COLORS.put(TileKey.OCCUPIED, Color.GRAY);
-        TILE_COLORS.put(TileKey.OCCUPIED_HIGHLIGHTED, Color.GREEN);
-        TILE_COLORS.put(TileKey.LINE, Color.BLACK);
-    }
 
     JScrollPane parentScrollPane;
     private int blockSize = BLOCK_SIZE; // Current size of the blocks
@@ -226,7 +218,7 @@ public class MapPanel extends JPanel {
         var gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
         gamePanel.getItemActionsPanel().setItem(null);
         gamePanel.refreshGameStatus();
-        if (selectedItem != null){
+        if (selectedItem != null) {
             selectedItem.setCurrentState(Item.State.IDLE);
             selectedItem = null;
         }
@@ -244,29 +236,37 @@ public class MapPanel extends JPanel {
                 ArrayList<Item> items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row); //mapItems[row][col];
                 if (items.size() != 0) {
                     if (items.contains(selectedItem)) {
-                        cellColor = TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED);
+                        cellColor = GameColors.OCCUPIED_HIGHLIGHTED_TILE_COLOR;
                         paintBlockContent(g, cellColor, selectedItem, col, row);
                     } else {
-                        cellColor = TILE_COLORS.get(TileKey.OCCUPIED);
+                        var item = items.get(0);
+                        switch (item.getOwnerPlayer().getPlayerID()) {
+                            case 0 -> cellColor = GameColors.PLAYER1_COLOR;
+                            case 1 -> cellColor = GameColors.PLAYER2_COLOR;
+                            case 2 -> cellColor = GameColors.PLAYER3_COLOR;
+                            case 3 -> cellColor = GameColors.PLAYER4_COLOR;
+                            default -> cellColor = GameColors.OCCUPIED_TILE_COLOR;
+                        }
+
                         paintBlockContent(g, cellColor, items.get(0), col, row);
                     }
                 } else {
-                    cellColor = TILE_COLORS.get(TileKey.EMPTY);
+                    cellColor = GameColors.EMPTY_TILE_COLOR;
                     paintBlockContent(g, cellColor, null, col, row);
                 }
             }
         }
 
-        if (selectedItem != null){
-            if (selectedItem.getCurrentState() == Item.State.MOVE){
+        if (selectedItem != null) {
+            if (selectedItem.getCurrentState() == Item.State.MOVE) {
                 paintMovableBlocks((Human) selectedItem);
-            } else if (selectedItem.getCurrentState() == Item.State.ATTACK){
+            } else if (selectedItem.getCurrentState() == Item.State.ATTACK) {
                 paintAttackableBlocks((AttackableInterface) selectedItem);
             }
         }
     }
 
-    public void paintMovableBlocks(Human human){
+    public void paintMovableBlocks(Human human) {
         if (human == null) return;
 
         Graphics g = getGraphics();
@@ -287,7 +287,7 @@ public class MapPanel extends JPanel {
         }
     }
 
-    public void paintAttackableBlocks(AttackableInterface attackableItem){
+    public void paintAttackableBlocks(AttackableInterface attackableItem) {
 
         Graphics g = getGraphics();
         int attackableItemX = attackableItem.getX();
@@ -312,7 +312,7 @@ public class MapPanel extends JPanel {
 
     // Helper method to draw the symbol for the given item at the specified position.
     private void drawItemSymbol(Graphics g, int x, int y, int width, int height, char symbol) {
-        g.setColor(TILE_COLORS.get(TileKey.LINE));
+        g.setColor(GameColors.LINE_TILE_COLOR);
         Font font = new Font("Arial", Font.BOLD, blockSize * 9 / 10);
         g.setFont(font);
         FontMetrics fontMetrics = g.getFontMetrics();
@@ -331,7 +331,7 @@ public class MapPanel extends JPanel {
             int row = block.row;
             // Determine the color of the cell based on its contents.
             Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row); // mapItems[row][col];
-            Color cellColor = item != null ? TILE_COLORS.get(TileKey.OCCUPIED) : TILE_COLORS.get(TileKey.EMPTY);
+            Color cellColor = item != null ? GameColors.OCCUPIED_TILE_COLOR : GameColors.EMPTY_TILE_COLOR;
 
             paintBlockContent(g, cellColor, item, col, row);
         }
@@ -345,7 +345,7 @@ public class MapPanel extends JPanel {
         }
 
         Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row);
-        Color cellColor = item != null ? TILE_COLORS.get(TileKey.OCCUPIED_HIGHLIGHTED) : TILE_COLORS.get(TileKey.HIGHLIGHTED);
+        Color cellColor = item != null ? GameColors.OCCUPIED_HIGHLIGHTED_TILE_COLOR : GameColors.HIGHLIGHTED_TILE_COLOR;
 
         paintBlockContent(g, cellColor, item, col, row);
 
@@ -357,17 +357,13 @@ public class MapPanel extends JPanel {
 
         g.setColor(cellColor);
         g.fillRect(col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize);
-        g.setColor(TILE_COLORS.get(TileKey.LINE));
+        g.setColor(GameColors.LINE_TILE_COLOR);
         g.drawRect(col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize);
 
         if (item != null) {
             char itemSymbol = item.getSymbol().charAt(0);
             drawItemSymbol(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, itemSymbol);
         }
-    }
-
-    private enum TileKey {
-        EMPTY, HIGHLIGHTED, OCCUPIED, OCCUPIED_HIGHLIGHTED, LINE
     }
 
     static class Block {
