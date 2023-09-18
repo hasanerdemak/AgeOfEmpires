@@ -1,8 +1,11 @@
 package gui.game;
 
 import entities.Item;
+import entities.buildings.concretes.MainBuilding;
+import entities.buildings.concretes.Tower;
+import entities.buildings.concretes.University;
 import entities.humans.abstracts.Human;
-import entities.humans.concretes.Archer;
+import entities.humans.concretes.*;
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
 import gui.game.selectiondialogs.ItemSelectionDialog;
@@ -17,13 +20,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MapPanel extends JPanel {
     private static final int MAP_ROWS = 50;
     private static final int MAP_COLS = 100;
-    private static final int BLOCK_SIZE = 12; // Initial size of the blocks
+    private static final int BLOCK_SIZE = 13; // Initial size of the blocks
 
     JScrollPane parentScrollPane;
     private int blockSize = BLOCK_SIZE; // Current size of the blocks
@@ -310,6 +311,7 @@ public class MapPanel extends JPanel {
         }
     }
 
+    /*
     // Helper method to draw the symbol for the given item at the specified position.
     private void drawItemSymbol(Graphics g, int x, int y, int width, int height, char symbol) {
         g.setColor(GameColors.LINE_TILE_COLOR);
@@ -321,6 +323,25 @@ public class MapPanel extends JPanel {
         int symbolX = x + (width - symbolWidth) / 2;
         int symbolY = y + (height + symbolHeight) / 2;
         g.drawString(String.valueOf(symbol), symbolX, symbolY);
+    }
+
+     */
+
+    private void drawItemSymbol(Graphics g, int x, int y, int width, int height, ImageIcon icon) {
+        //g.setColor(GameColors.LINE_TILE_COLOR);
+        //g.drawRect(x, y, width, height);
+
+        if (icon == null) return;
+        // Get the scaled instance of the icon to fit the block size
+        Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        ImageIcon scaledIcon = new ImageIcon(scaledImage);
+
+        // Calculate the position to center the icon
+        int iconX = x + (width - scaledIcon.getIconWidth()) / 2;
+        int iconY = y + (height - scaledIcon.getIconHeight()) / 2;
+
+        // Draw the scaled icon onto the Graphics object
+        scaledIcon.paintIcon(this, g, iconX, iconY);
     }
 
     private void resetBlocks() {
@@ -362,8 +383,33 @@ public class MapPanel extends JPanel {
 
         if (item != null) {
             char itemSymbol = item.getSymbol().charAt(0);
-            drawItemSymbol(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, itemSymbol);
+            //drawItemSymbol(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, itemSymbol);
+            ImageIcon myIcon = getIcon(item);
+            drawItemSymbol(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, myIcon);
         }
+    }
+
+    private ImageIcon getIcon(Item item) {
+        if (item.getClass().equals(MainBuilding.class)) {
+            return new ImageIcon("images/main-building.png");
+        } else if (item.getClass().equals(University.class)) {
+            return new ImageIcon("images/university.png");
+        } else if (item.getClass().equals(Tower.class)) {
+            return new ImageIcon("images/tower.png");
+        } else if (item.getClass().equals(Worker.class)) {
+            return new ImageIcon("images/worker.png");
+        } else if (item.getClass().equals(Archer.class)) {
+            return new ImageIcon("images/archer.png");
+        } else if (item.getClass().equals(Swordman.class)) {
+            return new ImageIcon("images/swordman.png");
+        } else if (item.getClass().equals(Spearman.class)) {
+            return new ImageIcon("images/spearman.png");
+        } else if (item.getClass().equals(Cavalry.class)) {
+            return new ImageIcon("images/cavalry.png");
+        } else if (item.getClass().equals(Catapult.class)) {
+            return new ImageIcon("images/catapult.png");
+        }
+        return null;
     }
 
     static class Block {
