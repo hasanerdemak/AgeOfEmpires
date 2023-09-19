@@ -25,20 +25,16 @@ public class MapPanel extends JPanel {
     private static final int MAP_ROWS = 50;
     private static final int MAP_COLS = 100;
     private static final int BLOCK_SIZE = 13; // Initial size of the blocks
-
+    private final JPopupMenu tooltipPopup = new JPopupMenu(); // Tooltip popup
     JScrollPane parentScrollPane;
     private int blockSize = BLOCK_SIZE; // Current size of the blocks
     private int xOffset = 0;
     private int yOffset = 0;
-
     // This 2D array will store the items on the map.
     // 'null' represents an empty cell, and non-null values will represent the buildings or humans on the map.
-    private ArrayList<Block> highlightedBlocks = new ArrayList<>();
-
     private Item selectedItem;
     private int lastClickedCol;
     private int lastClickedRow;
-
 
     public MapPanel() {
         setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -51,6 +47,13 @@ public class MapPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 handleMouseClick(e);
+            }
+        });
+
+        addMouseMotionListener(new MouseAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                handleMouseMove(e);
             }
         });
 
@@ -93,87 +96,6 @@ public class MapPanel extends JPanel {
 
     }
 
-    private void handleMouseClick(MouseEvent e) {
-        int x = e.getX() - getXOffset();
-        int y = e.getY() - getYOffset();
-
-        int col = x / getBlockSize();
-        int row = y / getBlockSize();
-        lastClickedCol = col;
-        lastClickedRow = row;
-        System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
-
-        GamePanel gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
-
-        if (selectedItem != null && selectedItem.getCurrentState() != Item.State.IDLE) {
-            handleSelectedItemAction(col, row);
-        } else {
-            handleNoSelectedItemAction(col, row, gamePanel);
-        }
-
-        gamePanel.getItemActionsPanel().setItem(selectedItem);
-        repaint();
-    }
-
-    private void handleSelectedItemAction(int col, int row) {
-        switch (selectedItem.getCurrentState()) {
-            case ATTACK -> handleAttackAction(col, row);
-            case MOVE -> handleMoveAction(col, row);
-        }
-    }
-
-    private void handleAttackAction(int col, int row) {
-        try {
-            AttackableInterface attackableItem = (AttackableInterface) selectedItem;
-            GameManager.getInstance().attack(attackableItem, col, row);
-            onTourPassed();
-        } catch (AgeOfEmpiresException ex) {
-            showErrorDialog(ex.getMessage());
-        }
-    }
-
-    private void handleMoveAction(int col, int row) {
-        try {
-            Human human = (Human) selectedItem;
-            GameManager.getInstance().move(human, col, row);
-            onTourPassed();
-        } catch (AgeOfEmpiresException ex) {
-            showErrorDialog(ex.getMessage());
-        }
-    }
-
-    private void handleNoSelectedItemAction(int col, int row, GamePanel gamePanel) {
-        var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
-
-        if (items.size() > 1) {
-            handleMultipleItemsSelection(col, row, gamePanel, items);
-        } else if (items.size() == 1) {
-            handleSingleItemSelectedAction(items.get(0));
-        } else {
-            selectedItem = null;
-        }
-    }
-
-    private void handleMultipleItemsSelection(int col, int row, GamePanel gamePanel, ArrayList<Item> items) {
-        highlightBlock(getGraphics(), col, row);
-        ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
-        dialog.setVisible(true);
-
-        selectedItem = dialog.getSelectedItem();
-        if (selectedItem != null) {
-            gamePanel.getItemActionsPanel().setItem(selectedItem);
-        }
-    }
-
-    private void handleSingleItemSelectedAction(Item item) {
-        selectedItem = item;
-        // Handle the item as needed
-    }
-
-    private void showErrorDialog(String message) {
-        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-    }
-
     public int getBlockSize() {
         return blockSize;
     }
@@ -213,6 +135,121 @@ public class MapPanel extends JPanel {
         int preferredWidth = blockSize * (MAP_COLS + 2) + 2 * xOffset;
         int preferredHeight = blockSize * (MAP_ROWS + 2) + 2 * yOffset;
         return new Dimension(preferredWidth, preferredHeight);
+    }
+
+    private void handleMouseClick(MouseEvent e) {
+        int x = e.getX() - getXOffset();
+        int y = e.getY() - getYOffset();
+
+        int col = x / getBlockSize();
+        int row = y / getBlockSize();
+        lastClickedCol = col;
+        lastClickedRow = row;
+        System.out.println("Tıklanan blok: (" + col + ", " + row + ")");
+
+        GamePanel gamePanel = GameManager.getInstance().getMainFrame().getGamePanel();
+
+        if (selectedItem != null && selectedItem.getCurrentState() != Item.State.IDLE) {
+            handleSelectedItemAction(col, row);
+        } else {
+            handleNoSelectedItemAction(col, row, gamePanel);
+        }
+
+        gamePanel.getItemActionsPanel().setItem(selectedItem);
+        repaint();
+    }
+
+    private void handleMouseMove(MouseEvent e) {
+        int x = e.getX() - getXOffset();
+        int y = e.getY() - getYOffset();
+
+        int col = x / getBlockSize();
+        int row = y / getBlockSize();
+
+        // Check if there is an item at the current block
+        ArrayList<Item> items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
+
+        if (items.size() != 0) {
+            // Show the tooltip popup with item information
+            showTooltip(items, x + getBlockSize() / 2, y + getBlockSize() / 2);
+            //showTooltip(item, (int) ((col+0.75) * getBlockSize()), (int) ((row+0.75) * getBlockSize()));
+        } else {
+            tooltipPopup.setVisible(false);
+        }
+    }
+
+    private void handleSelectedItemAction(int col, int row) {
+        switch (selectedItem.getCurrentState()) {
+            case ATTACK -> handleAttackAction(col, row);
+            case MOVE -> handleMoveAction(col, row);
+        }
+    }
+
+    private void handleAttackAction(int col, int row) {
+        try {
+            AttackableInterface attackableItem = (AttackableInterface) selectedItem;
+            GameManager.getInstance().attack(attackableItem, col, row);
+            onTourPassed();
+        } catch (AgeOfEmpiresException ex) {
+            showErrorDialog(ex.getMessage());
+        }
+    }
+
+    private void handleMoveAction(int col, int row) {
+        try {
+            Human human = (Human) selectedItem;
+            GameManager.getInstance().move(human, col, row);
+            onTourPassed();
+        } catch (AgeOfEmpiresException ex) {
+            showErrorDialog(ex.getMessage());
+        }
+    }
+
+    private void handleNoSelectedItemAction(int col, int row, GamePanel gamePanel) {
+        var items = GameManager.getInstance().getGame().getMap().getAllItemsAtCoordinates(col, row);
+
+        if (items.size() > 1) {
+            handleMultipleItemsSelection(col, row, gamePanel, items);
+        } else if (items.size() == 1) {
+            selectedItem = items.get(0);
+        } else {
+            selectedItem = null;
+        }
+    }
+
+    private void handleMultipleItemsSelection(int col, int row, GamePanel gamePanel, ArrayList<Item> items) {
+        highlightBlock(getGraphics(), col, row);
+        ItemSelectionDialog dialog = new ItemSelectionDialog((Frame) SwingUtilities.getWindowAncestor(gamePanel), items);
+        dialog.setVisible(true);
+
+        selectedItem = dialog.getSelectedItem();
+        if (selectedItem != null) {
+            gamePanel.getItemActionsPanel().setItem(selectedItem);
+        }
+    }
+
+    private void showErrorDialog(String message) {
+        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showTooltip(ArrayList<Item> items, int x, int y) {
+        tooltipPopup.removeAll();
+        for (var item : items) {
+            tooltipPopup.add(createTooltipTextArea(item), BorderLayout.CENTER);
+        }
+        if (!tooltipPopup.isShowing()) {
+            tooltipPopup.show(this, x, y);
+        }
+    }
+
+    // Create a text area for tooltip content
+    private JTextArea createTooltipTextArea(Item item) {
+        JTextArea tooltipText = new JTextArea(item.getItemInfo());
+
+        tooltipText.setWrapStyleWord(true);
+        tooltipText.setEditable(false);
+
+        return tooltipText;
     }
 
     public void onTourPassed() {
@@ -258,6 +295,7 @@ public class MapPanel extends JPanel {
             }
         }
 
+        // todo There is an error. Highlighted blocks are resetted after these function calls
         if (selectedItem != null) {
             if (selectedItem.getCurrentState() == Item.State.MOVE) {
                 paintMovableBlocks((Human) selectedItem);
@@ -311,23 +349,7 @@ public class MapPanel extends JPanel {
         }
     }
 
-    /*
-    // Helper method to draw the symbol for the given item at the specified position.
-    private void drawItemSymbol(Graphics g, int x, int y, int width, int height, char symbol) {
-        g.setColor(GameColors.LINE_TILE_COLOR);
-        Font font = new Font("Arial", Font.BOLD, blockSize * 9 / 10);
-        g.setFont(font);
-        FontMetrics fontMetrics = g.getFontMetrics();
-        int symbolWidth = fontMetrics.charWidth(symbol);
-        int symbolHeight = fontMetrics.getAscent();
-        int symbolX = x + (width - symbolWidth) / 2;
-        int symbolY = y + (height + symbolHeight) / 2;
-        g.drawString(String.valueOf(symbol), symbolX, symbolY);
-    }
-
-     */
-
-    private void drawItemSymbol(Graphics g, int x, int y, int width, int height, ImageIcon icon) {
+    private void paintItemIcon(Graphics g, int x, int y, int width, int height, ImageIcon icon) {
         //g.setColor(GameColors.LINE_TILE_COLOR);
         //g.drawRect(x, y, width, height);
 
@@ -344,22 +366,6 @@ public class MapPanel extends JPanel {
         scaledIcon.paintIcon(this, g, iconX, iconY);
     }
 
-    private void resetBlocks() {
-        var g = getGraphics();
-
-        for (var block : highlightedBlocks) {
-            int col = block.col;
-            int row = block.row;
-            // Determine the color of the cell based on its contents.
-            Item item = GameManager.getInstance().getGame().getMap().getItemAtCoordinates(col, row); // mapItems[row][col];
-            Color cellColor = item != null ? GameColors.OCCUPIED_TILE_COLOR : GameColors.EMPTY_TILE_COLOR;
-
-            paintBlockContent(g, cellColor, item, col, row);
-        }
-
-        highlightedBlocks.clear();
-    }
-
     public void highlightBlock(Graphics g, int col, int row) {
         if (col < 1 || col > 100 || row < 1 || row > 50) {
             return;
@@ -369,8 +375,6 @@ public class MapPanel extends JPanel {
         Color cellColor = item != null ? GameColors.OCCUPIED_HIGHLIGHTED_TILE_COLOR : GameColors.HIGHLIGHTED_TILE_COLOR;
 
         paintBlockContent(g, cellColor, item, col, row);
-
-        highlightedBlocks.add(new Block(col, row));
     }
 
     private void paintBlockContent(Graphics g, Color cellColor, Item item, int col, int row) {
@@ -385,7 +389,7 @@ public class MapPanel extends JPanel {
             char itemSymbol = item.getSymbol().charAt(0);
             //drawItemSymbol(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, itemSymbol);
             ImageIcon myIcon = getIcon(item);
-            drawItemSymbol(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, myIcon);
+            paintItemIcon(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, myIcon);
         }
     }
 

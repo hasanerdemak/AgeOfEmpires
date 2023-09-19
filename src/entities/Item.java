@@ -1,17 +1,16 @@
 package entities;
 
+import entities.buildings.concretes.University;
+import entities.humans.concretes.Archer;
+import entities.humans.concretes.Catapult;
+import entities.humans.concretes.Cavalry;
+import entities.humans.concretes.Spearman;
 import exceptions.AgeOfEmpiresException;
 import game.Player;
+import interfaces.AttackableInterface;
 import interfaces.ItemInterface;
 
 public abstract class Item implements ItemInterface {
-
-    public enum State{
-        IDLE,
-        ATTACK,
-        MOVE,
-        BUILD
-    }
 
     private int itemID;
     private Player ownerPlayer;
@@ -127,6 +126,56 @@ public abstract class Item implements ItemInterface {
         } else {
             return className + "-" + getItemID() + " (" + getOwnerPlayer() + ")";
         }
+    }
+
+    public String getItemInfo() {
+        StringBuilder info = new StringBuilder(this + "\n" +
+                //"Symbol: " + getSymbol() + "\n" +
+                "X: " + getX() + "   " +
+                "Y: " + getY() + "\n" +
+                "Life points: " + getLifePoints());
+
+        if (this instanceof AttackableInterface attackableItem) {
+            if (attackableItem instanceof Archer) {
+                info.append("\nAttack power:\n")
+                        .append("  - With Bow:\n")
+                        .append("    -> 2 (to humans)\n")
+                        .append("    -> 1 (to buildings)\n")
+                        .append("  - With Sword: 2");
+            } else if (attackableItem instanceof Spearman) {
+                info.append("\nAttack power:\n")
+                        .append("    -> 10 (to cavalry)\n")
+                        .append("    -> 2 (to other items)");
+            } else if (attackableItem instanceof Cavalry) {
+                info.append("\nAttack power:\n")
+                        .append("    -> 5 (to cavalry and buildings)\n")
+                        .append("    -> 10 (to other items)");
+            } else if (attackableItem instanceof Catapult) {
+                info.append("\nAttack power:\n")
+                        .append("    -> 30 (to buildings)\n")
+                        .append("    -> ∞ (to humans)");
+            } else {
+                info.append("\nAttack power: ").append(attackableItem.getAttackPower());
+            }
+        }
+
+        if (this instanceof University university) {
+            info.append("\nInfantry Training Count: ")
+                    .append(university.getInfantryTrainingCount())
+                    .append("\nCavalry Training Count: ")
+                    .append(university.getCavalryTrainingCount())
+                    .append("\nCatapult Training Count: ")
+                    .append(university.getCatapultTrainingCount());
+        }
+
+        return info.toString();
+    }
+
+    public enum State {
+        IDLE,
+        ATTACK,
+        MOVE,
+        BUILD
     }
 
 }

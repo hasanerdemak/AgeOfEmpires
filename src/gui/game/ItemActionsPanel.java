@@ -6,14 +6,12 @@ import entities.buildings.concretes.Tower;
 import entities.buildings.concretes.University;
 import entities.humans.abstracts.Human;
 import entities.humans.abstracts.Soldier;
-import entities.humans.concretes.Archer;
 import entities.humans.concretes.Worker;
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
 import gui.game.selectiondialogs.BuildSelectionDialog;
 import gui.game.selectiondialogs.PurchaseSelectionDialog;
 import interfaces.AttackableInterface;
-import utils.MoveControlUtils;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -174,6 +172,7 @@ public class ItemActionsPanel extends JPanel {
         try {
             var gameManager = GameManager.getInstance();
             gameManager.build(worker, selectedBuildingName);
+            worker.setCurrentState(Item.State.IDLE);
             gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
         } catch (AgeOfEmpiresException ex) {
             JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -241,11 +240,7 @@ public class ItemActionsPanel extends JPanel {
         boolean isButtonsEnabled = GameManager.getInstance().getGame().getCurrentPlayer().equals(item.getOwnerPlayer());
         setButtonsEnabled(isButtonsEnabled);
 
-        String info = item.toString() + "\n" + "Symbol: " + item.getSymbol() + "\n" + "x: " + item.getX() + "\n" + "y: " + item.getY() + "\n" + "life points: " + item.getLifePoints();
-
-        if (item instanceof University university) {
-            info += "\n" + "Infantry Training Count: " + university.getInfantryTrainingCount() + "\n" + "Cavalry Training Count: " + university.getCavalryTrainingCount() + "\n" + "Catapult Training Count: " + university.getCatapultTrainingCount();
-        }
+        String info = item.getItemInfo();
 
         infoTextArea.setText(info);
         infoTextArea.setVisible(true);
