@@ -6,6 +6,7 @@ import entities.buildings.concretes.Tower;
 import entities.buildings.concretes.University;
 import entities.humans.abstracts.Human;
 import entities.humans.abstracts.Soldier;
+import entities.humans.concretes.Cavalry;
 import entities.humans.concretes.Worker;
 import exceptions.AgeOfEmpiresException;
 import game.GameManager;
@@ -31,6 +32,7 @@ public class ItemActionsPanel extends JPanel {
     JButton moveButton = new JButton("Move");
     JButton attackButton = new JButton("Attack");
     JButton buildButton = new JButton("Build");
+    JButton cancelButton = new JButton("Cancel");
     JButton passTheTourButton = new JButton("Pass The Tour");
     private JTextArea infoTextArea = new JTextArea();
     private GridBagConstraints constraints = new GridBagConstraints();
@@ -54,9 +56,9 @@ public class ItemActionsPanel extends JPanel {
         setLayout(gridBagLayout);
         gridBagLayout.columnWidths = new int[]{0, 0};
         gridBagLayout.columnWeights = new double[]{1.0, Double.MIN_VALUE};
-        gridBagLayout.rowHeights = new int[11];//new int[getComponentCount() + 1];
-        gridBagLayout.rowWeights = new double[11];//new double[getComponentCount() + 1];
-        gridBagLayout.rowWeights[9] = Double.MIN_VALUE;
+        gridBagLayout.rowHeights = new int[12];//new int[getComponentCount() + 1];
+        gridBagLayout.rowWeights = new double[12];//new double[getComponentCount() + 1];
+        gridBagLayout.rowWeights[10] = Double.MIN_VALUE;
 
         constraints.anchor = GridBagConstraints.NORTH;
         infoTextArea.setWrapStyleWord(true);
@@ -72,7 +74,7 @@ public class ItemActionsPanel extends JPanel {
         constraints.gridy = 0;
         add(infoTextArea, constraints);
 
-        constraints.gridy = 10;
+        constraints.gridy = 11;
         add(passTheTourButton, constraints);
     }
 
@@ -84,6 +86,7 @@ public class ItemActionsPanel extends JPanel {
         buttons.add(moveButton);
         buttons.add(attackButton);
         buttons.add(buildButton);
+        buttons.add(cancelButton);
 
         constraints.gridy = 1;
         for (var button : buttons) {
@@ -96,9 +99,9 @@ public class ItemActionsPanel extends JPanel {
     private void initializeItemButtonsHashMap() {
         itemButtons.put(MainBuilding.class, new ArrayList<>(Arrays.asList(purchaseButton)));
         itemButtons.put(University.class, new ArrayList<>(Arrays.asList(trainInfantryButton, trainCavalryButton, trainCatapultButton)));
-        itemButtons.put(Tower.class, new ArrayList<>(Arrays.asList(attackButton)));
-        itemButtons.put(Worker.class, new ArrayList<>(Arrays.asList(moveButton, attackButton, buildButton)));
-        itemButtons.put(Soldier.class, new ArrayList<>(Arrays.asList(moveButton, attackButton)));
+        itemButtons.put(Tower.class, new ArrayList<>(Arrays.asList(attackButton, cancelButton)));
+        itemButtons.put(Worker.class, new ArrayList<>(Arrays.asList(moveButton, attackButton, buildButton, cancelButton)));
+        itemButtons.put(Soldier.class, new ArrayList<>(Arrays.asList(moveButton, attackButton, cancelButton)));
     }
 
     private void initializeButtonsActionListeners() {
@@ -109,7 +112,19 @@ public class ItemActionsPanel extends JPanel {
         moveButton.addActionListener(e -> performMoveAction());
         attackButton.addActionListener(e -> performAttackAction());
         buildButton.addActionListener(e -> performBuildAction());
+        cancelButton.addActionListener(e -> performCancelAction());
         passTheTourButton.addActionListener(e -> performPassTheTourAction());
+    }
+
+    private ArrayList<JButton> getCurrentButtons(){
+        ArrayList<JButton> currentButtons;
+        if (item instanceof Soldier) {
+            currentButtons = itemButtons.get(Soldier.class);
+        } else {
+            currentButtons = itemButtons.get(item.getClass());
+        }
+
+        return currentButtons;
     }
 
     private void performPurchaseAction() {
@@ -150,6 +165,12 @@ public class ItemActionsPanel extends JPanel {
 
         var mapPanel = GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel();
         mapPanel.paintMovableBlocks(human);
+
+        for (var button: getCurrentButtons()) {
+            button.setEnabled(false);
+        }
+        cancelButton.setEnabled(true);
+
     }
 
     private void performAttackAction() {
@@ -158,6 +179,12 @@ public class ItemActionsPanel extends JPanel {
 
         var mapPanel = GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel();
         mapPanel.paintAttackableBlocks(attackableItem);
+
+        for (var button: getCurrentButtons()) {
+            button.setEnabled(false);
+        }
+        cancelButton.setEnabled(true);
+
     }
 
     private void performBuildAction() {
@@ -169,14 +196,28 @@ public class ItemActionsPanel extends JPanel {
 
         String selectedBuildingName = dialog.getSelectedBuildingName();
 
-        try {
-            var gameManager = GameManager.getInstance();
-            gameManager.build(worker, selectedBuildingName);
-            worker.setCurrentState(Item.State.IDLE);
-            gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
-        } catch (AgeOfEmpiresException ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        if (selectedBuildingName != null){
+            try {
+                var gameManager = GameManager.getInstance();
+                gameManager.build(worker, selectedBuildingName);
+                worker.setCurrentState(Item.State.IDLE);
+                gameManager.getMainFrame().getGamePanel().getMapPanel().onTourPassed();
+            } catch (AgeOfEmpiresException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
+    }
+
+    private void performCancelAction() {
+        var item = getItem();
+        item.setCurrentState(Item.State.IDLE);
+
+        for (var button: getCurrentButtons()) {
+            button.setEnabled(true);
+        }
+        cancelButton.setEnabled(false);
+
+        GameManager.getInstance().getMainFrame().getGamePanel().getMapPanel().repaint();
     }
 
     private void performPassTheTourAction() {
@@ -218,6 +259,7 @@ public class ItemActionsPanel extends JPanel {
         for (var button : visibleButtons) {
             button.setEnabled(enabled);
         }
+        cancelButton.setEnabled(false);
     }
 
     public Item getItem() {
@@ -255,11 +297,7 @@ public class ItemActionsPanel extends JPanel {
 
         visibleButtons.clear();
         if (item != null) {
-            if (item instanceof Soldier) {
-                visibleButtons.addAll(itemButtons.get(Soldier.class));
-            } else {
-                visibleButtons.addAll(itemButtons.get(item.getClass()));
-            }
+            visibleButtons.addAll(getCurrentButtons());
 
             constraints.gridy = 1;
             for (var button : visibleButtons) {
