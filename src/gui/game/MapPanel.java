@@ -350,9 +350,6 @@ public class MapPanel extends JPanel {
     }
 
     private void paintItemIcon(Graphics g, int x, int y, int width, int height, ImageIcon icon) {
-        //g.setColor(GameColors.LINE_TILE_COLOR);
-        //g.drawRect(x, y, width, height);
-
         if (icon == null) return;
         // Get the scaled instance of the icon to fit the block size
         Image scaledImage = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
@@ -386,8 +383,6 @@ public class MapPanel extends JPanel {
         g.drawRect(col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize);
 
         if (item != null) {
-            char itemSymbol = item.getSymbol().charAt(0);
-            //drawItemSymbol(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, itemSymbol);
             ImageIcon myIcon = getIcon(item);
             paintItemIcon(g, col * blockSize + xOffset, row * blockSize + yOffset, blockSize, blockSize, myIcon);
         }
