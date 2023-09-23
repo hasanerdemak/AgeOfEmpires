@@ -1,9 +1,6 @@
 package game;
 
 import entities.Resources;
-import entities.buildings.concretes.Tower;
-import entities.buildings.concretes.University;
-import entities.humans.concretes.*;
 import exceptions.AgeOfEmpiresException;
 import interfaces.GameInterface;
 import utils.ResourcesUtils;
@@ -29,6 +26,7 @@ public class Game implements GameInterface {
             players.add(new Player(i, this, true));
         }
 
+        /*
         var player = players.get(0);
         player.setUniversity(new University(player, 2,2));
         player.addTower(new Tower(player, 4,4), true);
@@ -38,6 +36,7 @@ public class Game implements GameInterface {
         player.addSoldier(new Archer(player, 12,12), true);
         player.addSoldier(new Cavalry(player, 14,14), true);
         player.addSoldier(new Catapult(player, 16,16), true);
+         */
 
     }
 
@@ -91,7 +90,7 @@ public class Game implements GameInterface {
         return map;
     }
 
-    public Player getCurrentPlayer(){
+    public Player getCurrentPlayer() {
         try {
             return getPlayer(getPlayerTurnCounter());
         } catch (AgeOfEmpiresException e) {

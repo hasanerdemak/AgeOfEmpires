@@ -6,7 +6,6 @@ import entities.humans.abstracts.Human;
 import interfaces.MapInterface;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 
 public class Map implements MapInterface {
