@@ -25,13 +25,11 @@ public class MapPanel extends JPanel {
     private static final int MAP_ROWS = 50;
     private static final int MAP_COLS = 100;
     private static final int BLOCK_SIZE = 13; // Initial size of the blocks
-    private final JPopupMenu tooltipPopup = new JPopupMenu(); // Tooltip popup
+    private final JPopupMenu tooltipPopup = new JPopupMenu();
     JScrollPane parentScrollPane;
-    private int blockSize = BLOCK_SIZE; // Current size of the blocks
+    private int blockSize = BLOCK_SIZE;
     private int xOffset = 0;
     private int yOffset = 0;
-    // This 2D array will store the items on the map.
-    // 'null' represents an empty cell, and non-null values will represent the buildings or humans on the map.
     private Item selectedItem;
     private int lastClickedCol;
     private int lastClickedRow;
