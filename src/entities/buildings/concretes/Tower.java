@@ -54,13 +54,11 @@ public class Tower extends Building implements TowerInterface, AttackableInterfa
 
     @Override
     public boolean checkIfAlive() {
-        if (super.checkIfAlive()) {
-            return true;
+        boolean isAlive = super.checkIfAlive();
+        if (!isAlive) {
+            getOwnerPlayer().removeTower(this);
         }
-
-        getOwnerPlayer().removeTower(this);
-        return false;
+        return isAlive;
     }
-
 
 }

@@ -57,15 +57,14 @@ public class MainBuilding extends Building {
 
     @Override
     public boolean checkIfAlive() {
-        if (super.checkIfAlive()) {
-            return true;
+        boolean isAlive = super.checkIfAlive();
+        if (!isAlive) {
+            var ownerPlayer = getOwnerPlayer();
+            ownerPlayer.setMainBuilding(null);
+            ownerPlayer.getCurrentGame().removePlayer(ownerPlayer);
+            // System.out.println(ownerPlayer + " lost his Main Building and WAS DEFEATED");
         }
-
-        var ownerPlayer = getOwnerPlayer();
-        ownerPlayer.setMainBuilding(null);
-        ownerPlayer.getCurrentGame().removePlayer(ownerPlayer);
-        //System.out.println(ownerPlayer + " lost his Main Building and WAS DEFEATED");
-        return false;
+        return isAlive;
     }
 
 }

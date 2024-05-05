@@ -101,20 +101,20 @@ public class University extends Building implements UniversityInterface {
 
     @Override
     public boolean checkIfAlive() {
-        if (super.checkIfAlive()) {
-            return true;
+        boolean isAlive = super.checkIfAlive();
+        if (!isAlive) {
+            var ownerPlayer = getOwnerPlayer();
+            try {
+                ownerPlayer.setUniversity(null);
+            } catch (AgeOfEmpiresException e) {
+                throw new RuntimeException(e);
+            }
+            for (int i = 0; i < ownerPlayer.getSoldierCount(); i++) {
+                ownerPlayer.getSoldier(i).checkIfAlive();
+            }
         }
-
-        var ownerPlayer = getOwnerPlayer();
-        try {
-            ownerPlayer.setUniversity(null);
-        } catch (AgeOfEmpiresException e) {
-            throw new RuntimeException(e);
-        }
-        for (int i = 0; i < ownerPlayer.getSoldierCount(); i++) {
-            ownerPlayer.getSoldier(i).checkIfAlive();
-        }
-        return false;
+        
+        return isAlive;
     }
 
     public enum UnitType {

@@ -51,11 +51,10 @@ public abstract class Soldier extends Human {
 
     @Override
     public boolean checkIfAlive() {
-        if (super.checkIfAlive()) {
-            return true;
+        boolean isAlive = super.checkIfAlive();
+        if (!isAlive) {
+            getOwnerPlayer().removeSoldier(this);
         }
-
-        getOwnerPlayer().removeSoldier(this);
-        return false;
+        return isAlive;
     }
 }

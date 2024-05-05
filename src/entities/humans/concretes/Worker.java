@@ -83,11 +83,10 @@ public class Worker extends Human implements WorkerInterface {
 
     @Override
     public boolean checkIfAlive() {
-        if (super.checkIfAlive()) {
-            return true;
+        boolean isAlive = super.checkIfAlive();
+        if (!isAlive) {
+            getOwnerPlayer().removeWorker(this);
         }
-
-        getOwnerPlayer().removeWorker(this);
-        return false;
+        return isAlive;
     }
 }

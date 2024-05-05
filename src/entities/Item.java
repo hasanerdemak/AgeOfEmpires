@@ -106,11 +106,11 @@ public abstract class Item implements ItemInterface {
 
     @Override
     public boolean checkIfAlive() {
-        if (getLifePoints() <= 0) {
+        boolean isAlive = getLifePoints() > 0;
+        if (!isAlive) {
             ownerPlayer.getCurrentGame().getMap().getMapItems().remove(this);
-            return false;
         }
-        return true;
+        return isAlive;
     }
 
     @Override
