@@ -1,6 +1,6 @@
 package entities.buildings.concretes;
 
-import entities.Resources;
+import constants.BuildingConstants.TowerConstants;
 import entities.buildings.abstracts.Building;
 import exceptions.AgeOfEmpiresException;
 import game.Player;
@@ -8,40 +8,37 @@ import interfaces.AttackableInterface;
 import interfaces.TowerInterface;
 
 public class Tower extends Building implements TowerInterface, AttackableInterface {
-    private final int lowerAttackDistanceLimit = 1;
-    private final int upperAttackDistanceLimit = 7;
-    private final int attackPower = 2;
 
     public Tower() {
-        super(50, new Resources(10, 5, 40));
+        super(TowerConstants.LIFE_POINTS, TowerConstants.COST);
     }
 
     public Tower(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 50, new Resources(10, 5, 40));
+        super(ownerPlayer, x, y, TowerConstants.LIFE_POINTS, TowerConstants.COST);
     }
 
     public Tower(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, new Resources(10, 5, 40));
+        super(ownerPlayer, x, y, lifePoints, TowerConstants.COST);
     }
 
     @Override
     public float getLowerAttackDistanceLimit() {
-        return lowerAttackDistanceLimit;
+        return TowerConstants.LOWER_ATTACK_DISTANCE_LIMIT;
     }
 
     @Override
     public float getUpperAttackDistanceLimit() {
-        return upperAttackDistanceLimit;
+        return TowerConstants.UPPER_ATTACK_DISTANCE_LIMIT;
     }
 
     @Override
     public int getAttackPower() {
-        return attackPower;
+        return TowerConstants.ATTACK_POWER;
     }
 
     @Override
     public String getSymbol() {
-        return "T";
+        return TowerConstants.SYMBOL;
     }
 
     @Override

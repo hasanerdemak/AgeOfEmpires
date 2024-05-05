@@ -1,5 +1,6 @@
 package entities.humans.concretes;
 
+import constants.HumanConstants.WorkerConstants;
 import entities.buildings.abstracts.Building;
 import entities.buildings.concretes.MainBuilding;
 import entities.buildings.concretes.Tower;
@@ -8,31 +9,32 @@ import entities.humans.abstracts.Human;
 import interfaces.WorkerInterface;
 import utils.MoveControlUtils;
 import game.Player;
-import entities.Resources;
 import utils.ResourcesUtils;
 import exceptions.AgeOfEmpiresException;
 
 public class Worker extends Human implements WorkerInterface {
 
     public Worker() {
-        super(2, new Resources(0, 1, 0),
-                3, 1, 1, (float) Math.sqrt(2));
+        super(WorkerConstants.LIFE_POINTS, WorkerConstants.COST,
+                WorkerConstants.MOVEMENT_SPEED, WorkerConstants.ATTACK_POWER,
+                WorkerConstants.LOWER_ATTACK_DISTANCE_LIMIT, WorkerConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Worker(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 2, new Resources(0, 1, 0),
-                3, 1, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, WorkerConstants.LIFE_POINTS, WorkerConstants.COST,
+                WorkerConstants.MOVEMENT_SPEED, WorkerConstants.ATTACK_POWER,
+                WorkerConstants.LOWER_ATTACK_DISTANCE_LIMIT, WorkerConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Worker(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, new Resources(0, 1, 0),
-                3, 1, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, lifePoints, WorkerConstants.COST,
+                WorkerConstants.MOVEMENT_SPEED, WorkerConstants.ATTACK_POWER,
+                WorkerConstants.LOWER_ATTACK_DISTANCE_LIMIT, WorkerConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
-
 
     @Override
     public String getSymbol() {
-        return "W";
+        return WorkerConstants.SYMBOL;
     }
 
     @Override

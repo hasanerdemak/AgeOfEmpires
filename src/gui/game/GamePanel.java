@@ -3,8 +3,7 @@ package gui.game;
 import exceptions.AgeOfEmpiresException;
 import game.Game;
 import game.GameManager;
-import gui.MainFrame;
-import utils.GameColors;
+import constants.GameColors;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;

@@ -1,5 +1,6 @@
 package entities.buildings.concretes;
 
+import constants.BuildingConstants.MainBuildingConstants;
 import entities.buildings.abstracts.Building;
 import entities.humans.abstracts.Human;
 import entities.humans.abstracts.Soldier;
@@ -11,25 +12,25 @@ import utils.ResourcesUtils;
 public class MainBuilding extends Building {
 
     public MainBuilding() {
-        super(100, null);
+        super(MainBuildingConstants.LIFE_POINTS, MainBuildingConstants.COST);
 
         setItemID(0);
     }
 
     public MainBuilding(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 100, null);
+        super(ownerPlayer, x, y, MainBuildingConstants.LIFE_POINTS, MainBuildingConstants.COST);
 
         setItemID(0);
     }
 
     public MainBuilding(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, null);
+        super(ownerPlayer, x, y, lifePoints, MainBuildingConstants.COST);
     }
 
 
     @Override
     public String getSymbol() {
-        return "M";
+        return MainBuildingConstants.SYMBOL;
     }
 
     public void produceUnit(Human human) throws AgeOfEmpiresException {

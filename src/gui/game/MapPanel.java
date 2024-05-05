@@ -10,7 +10,7 @@ import exceptions.AgeOfEmpiresException;
 import game.GameManager;
 import gui.game.selectiondialogs.ItemSelectionDialog;
 import interfaces.AttackableInterface;
-import utils.GameColors;
+import constants.GameColors;
 import utils.MoveControlUtils;
 
 import javax.swing.*;

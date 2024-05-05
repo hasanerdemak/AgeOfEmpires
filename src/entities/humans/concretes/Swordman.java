@@ -1,25 +1,28 @@
 package entities.humans.concretes;
 
+import constants.HumanConstants.SwordmanConstants;
 import entities.buildings.concretes.University;
 import entities.humans.abstracts.Soldier;
 import game.Player;
-import entities.Resources;
 import exceptions.AgeOfEmpiresException;
 
 public class Swordman extends Soldier {
     public Swordman() {
-        super(5, new Resources(2, 2, 0),
-                2, 3, 1, (float) Math.sqrt(2));
+        super(SwordmanConstants.LIFE_POINTS, SwordmanConstants.COST,
+                SwordmanConstants.MOVEMENT_SPEED, SwordmanConstants.ATTACK_POWER,
+                SwordmanConstants.LOWER_ATTACK_DISTANCE_LIMIT, SwordmanConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Swordman(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 5, new Resources(2, 2, 0),
-                2, 3, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, SwordmanConstants.LIFE_POINTS, SwordmanConstants.COST,
+                SwordmanConstants.MOVEMENT_SPEED, SwordmanConstants.ATTACK_POWER,
+                SwordmanConstants.LOWER_ATTACK_DISTANCE_LIMIT, SwordmanConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Swordman(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, new Resources(2, 2, 0),
-                2, 3, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, lifePoints, SwordmanConstants.COST,
+                SwordmanConstants.MOVEMENT_SPEED, SwordmanConstants.ATTACK_POWER,
+                SwordmanConstants.LOWER_ATTACK_DISTANCE_LIMIT, SwordmanConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     @Override
@@ -37,6 +40,6 @@ public class Swordman extends Soldier {
 
     @Override
     public String getSymbol() {
-        return "K";
+        return SwordmanConstants.SYMBOL;
     }
 }

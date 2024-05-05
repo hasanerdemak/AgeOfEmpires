@@ -1,6 +1,6 @@
 package entities.buildings.concretes;
 
-import entities.Resources;
+import constants.BuildingConstants.UniversityConstants;
 import entities.buildings.abstracts.Building;
 import exceptions.AgeOfEmpiresException;
 import game.Player;
@@ -9,30 +9,24 @@ import utils.MoveControlUtils;
 import utils.ResourcesUtils;
 
 public class University extends Building implements UniversityInterface {
-    private int infantryTrainingCount;
-    private int cavalryTrainingCount;
-    private int catapultTrainingCount;
+    private int infantryTrainingCount = 0;
+    private int cavalryTrainingCount = 0;
+    private int catapultTrainingCount = 0;
 
     public University() {
-        super(30, new Resources(30, 50, 5));
-        infantryTrainingCount = 0;
-        cavalryTrainingCount = 0;
-        catapultTrainingCount = 0;
+        super(UniversityConstants.LIFE_POINTS, UniversityConstants.COST);
     }
 
     public University(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 30, new Resources(30, 50, 5));
-        infantryTrainingCount = 0;
-        cavalryTrainingCount = 0;
-        catapultTrainingCount = 0;
+        super(ownerPlayer, x, y, UniversityConstants.LIFE_POINTS, UniversityConstants.COST);
     }
 
     public University(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, new Resources(30, 50, 5));
+        super(ownerPlayer, x, y, lifePoints, UniversityConstants.COST);
     }
 
     public University(Player ownerPlayer, int x, int y, int infantryTrainingCount, int cavalryTrainingCount, int catapultTrainingCount) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 30, new Resources(30, 50, 5));
+        super(ownerPlayer, x, y, UniversityConstants.LIFE_POINTS, UniversityConstants.COST);
         this.infantryTrainingCount = infantryTrainingCount;
         this.cavalryTrainingCount = cavalryTrainingCount;
         this.catapultTrainingCount = catapultTrainingCount;
@@ -64,7 +58,7 @@ public class University extends Building implements UniversityInterface {
 
     @Override
     public String getSymbol() {
-        return "U";
+        return UniversityConstants.SYMBOL;
     }
 
     private void trainUnit(UnitType unitType) throws AgeOfEmpiresException {
@@ -72,7 +66,7 @@ public class University extends Building implements UniversityInterface {
         MoveControlUtils.checkMoveConditions(getOwnerPlayer());
 
         var player = getOwnerPlayer();
-        var cost = new Resources(0, 50, 0);
+        var cost = UniversityConstants.TRAINING_COST;
         if (ResourcesUtils.hasEnoughResources(player, cost)) {
             ResourcesUtils.deductResources(player, cost);
             switch (unitType) {

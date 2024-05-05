@@ -1,7 +1,7 @@
 package entities.humans.concretes;
 
+import constants.HumanConstants.ArcherConstants;
 import entities.Item;
-import entities.Resources;
 import entities.buildings.abstracts.Building;
 import entities.buildings.concretes.University;
 import entities.humans.abstracts.Human;
@@ -11,26 +11,27 @@ import game.Player;
 import utils.DistanceUtils;
 
 public class Archer extends Soldier {
-    private final float lowerArrowThrowDistance = 2;
-    private final float upperArrowThrowDistance = 5;
     private Weapon currentWeapon = Weapon.BOW;
 
     public Archer() {
-        super(5, new Resources(5, 2, 0), 2, 2, 1, (float) Math.sqrt(2));
+        super(ArcherConstants.LIFE_POINTS, ArcherConstants.COST, ArcherConstants.MOVEMENT_SPEED,
+                ArcherConstants.SWORD_ATTACK_POWER, ArcherConstants.SWORD_LOWER_ATTACK_DISTANCE_LIMIT, ArcherConstants.SWORD_UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Archer(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 5, new Resources(5, 2, 0), 2, 2, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, ArcherConstants.LIFE_POINTS, ArcherConstants.COST, ArcherConstants.MOVEMENT_SPEED,
+                ArcherConstants.SWORD_ATTACK_POWER, ArcherConstants.SWORD_LOWER_ATTACK_DISTANCE_LIMIT, ArcherConstants.SWORD_UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Archer(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, new Resources(5, 2, 0), 2, 2, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, lifePoints, ArcherConstants.COST, ArcherConstants.MOVEMENT_SPEED,
+                ArcherConstants.SWORD_ATTACK_POWER, ArcherConstants.SWORD_LOWER_ATTACK_DISTANCE_LIMIT, ArcherConstants.SWORD_UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     @Override
     public float getLowerAttackDistanceLimit() {
         if (currentWeapon == Weapon.BOW) {
-            return lowerArrowThrowDistance;
+            return ArcherConstants.BOW_LOWER_ATTACK_DISTANCE_LIMIT;
         } else {
             return super.getLowerAttackDistanceLimit();
         }
@@ -39,7 +40,7 @@ public class Archer extends Soldier {
     @Override
     public float getUpperAttackDistanceLimit() {
         if (currentWeapon == Weapon.BOW) {
-            return upperArrowThrowDistance;
+            return ArcherConstants.BOW_UPPER_ATTACK_DISTANCE_LIMIT;
         } else {
             return super.getUpperAttackDistanceLimit();
         }
@@ -65,16 +66,16 @@ public class Archer extends Soldier {
             Item item = getOwnerPlayer().getCurrentGame().getMap().getItemAtCoordinates(x, y);
             if (item != null) {
                 if (item instanceof Human) {
-                    setAttackPower(2);
+                    setAttackPower(ArcherConstants.BOW_ATTACK_POWER_TO_HUMAN);
                 } else if (item instanceof Building) {
-                    setAttackPower(1);
+                    setAttackPower(ArcherConstants.BOW_ATTACK_POWER_TO_BUILDING);
                 }
             }
         }
     }
 
     private void chooseWeapon(int x, int y) {
-        if (DistanceUtils.getEuclideanDistanceBetweenCoordinates(this.getX(), this.getY(), x, y) <= Math.sqrt(2)) {
+        if (DistanceUtils.getEuclideanDistanceBetweenCoordinates(this.getX(), this.getY(), x, y) <= ArcherConstants.SWORD_UPPER_ATTACK_DISTANCE_LIMIT) {
             currentWeapon = Weapon.SWORD;
         } else {
             currentWeapon = Weapon.BOW;
@@ -83,7 +84,7 @@ public class Archer extends Soldier {
 
     @Override
     public String getSymbol() {
-        return "O";
+        return ArcherConstants.SYMBOL;
     }
 
     public enum Weapon {

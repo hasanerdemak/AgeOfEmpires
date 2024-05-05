@@ -1,26 +1,29 @@
 package entities.humans.concretes;
 
+import constants.HumanConstants.SpearmanConstants;
 import entities.Item;
 import entities.buildings.concretes.University;
 import entities.humans.abstracts.Soldier;
 import game.Player;
-import entities.Resources;
 import exceptions.AgeOfEmpiresException;
 
 public class Spearman extends Soldier {
     public Spearman() {
-        super(5, new Resources(2, 3, 0),
-                2, 2, 1, (float) Math.sqrt(2));
+        super(SpearmanConstants.LIFE_POINTS, SpearmanConstants.COST,
+                SpearmanConstants.MOVEMENT_SPEED, SpearmanConstants.ATTACK_POWER,
+                SpearmanConstants.LOWER_ATTACK_DISTANCE_LIMIT, SpearmanConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Spearman(Player ownerPlayer, int x, int y) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, 5, new Resources(2, 3, 0),
-                2, 2, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, SpearmanConstants.LIFE_POINTS, SpearmanConstants.COST,
+                SpearmanConstants.MOVEMENT_SPEED, SpearmanConstants.ATTACK_POWER,
+                SpearmanConstants.LOWER_ATTACK_DISTANCE_LIMIT, SpearmanConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     public Spearman(Player ownerPlayer, int x, int y, int lifePoints) throws AgeOfEmpiresException {
-        super(ownerPlayer, x, y, lifePoints, new Resources(2, 3, 0),
-                2, 2, 1, (float) Math.sqrt(2));
+        super(ownerPlayer, x, y, lifePoints, SpearmanConstants.COST,
+                SpearmanConstants.MOVEMENT_SPEED, SpearmanConstants.ATTACK_POWER,
+                SpearmanConstants.LOWER_ATTACK_DISTANCE_LIMIT, SpearmanConstants.UPPER_ATTACK_DISTANCE_LIMIT);
     }
 
     @Override
@@ -36,14 +39,14 @@ public class Spearman extends Soldier {
     public void makeAttackAdjustments(int x, int y) {
         Item item = getOwnerPlayer().getCurrentGame().getMap().getItemAtCoordinates(x, y);
         if (item instanceof Cavalry) {
-            setAttackPower(10);
+            setAttackPower(SpearmanConstants.ATTACK_POWER_TO_CAVALRY);
         } else {
-            setAttackPower(2);
+            setAttackPower(SpearmanConstants.ATTACK_POWER);
         }
     }
 
     @Override
     public String getSymbol() {
-        return "S";
+        return SpearmanConstants.SYMBOL;
     }
 }
