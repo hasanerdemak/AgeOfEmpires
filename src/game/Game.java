@@ -31,7 +31,7 @@ public class Game implements GameInterface {
         player.setUniversity(new University(player, 2,2));
         player.addTower(new Tower(player, 4,4), true);
         player.addWorker(new Worker(player, 6,6), true);
-        player.addSoldier(new Swordman(player, 8,8), true);
+        player.addSoldier(new Swordsman(player, 8,8), true);
         player.addSoldier(new Spearman(player, 10,10), true);
         player.addSoldier(new Archer(player, 12,12), true);
         player.addSoldier(new Cavalry(player, 14,14), true);

@@ -131,7 +131,7 @@ public class GameManager {
         System.out.print("""
                 1- Worker
                 2- Archer
-                3- Swordman
+                3- Swordsman
                 4- Spearman
                 5- Cavalry
                 6- Catapult
@@ -145,7 +145,7 @@ public class GameManager {
         switch (operation) {
             case 1 -> player.purchase(new Worker());
             case 2 -> player.purchase(new Archer());
-            case 3 -> player.purchase(new Swordman());
+            case 3 -> player.purchase(new Swordsman());
             case 4 -> player.purchase(new Spearman());
             case 5 -> player.purchase(new Cavalry());
             case 6 -> player.purchase(new Catapult());
@@ -158,7 +158,7 @@ public class GameManager {
         switch (itemName) {
             case "Worker" -> player.purchase(new Worker());
             case "Archer" -> player.purchase(new Archer());
-            case "Swordman" -> player.purchase(new Swordman());
+            case "Swordsman" -> player.purchase(new Swordsman());
             case "Spearman" -> player.purchase(new Spearman());
             case "Cavalry" -> player.purchase(new Cavalry());
             case "Catapult" -> player.purchase(new Catapult());
@@ -357,7 +357,7 @@ public class GameManager {
         int operation = 4;
         while (operation == 4) {
             System.out.print("""
-                    1- Infantry (Archer, Swordman, Spearman)
+                    1- Infantry (Archer, Swordsman, Spearman)
                     2- Cavalry
                     3- Catapult
                     4- Print info

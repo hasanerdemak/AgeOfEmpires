@@ -218,9 +218,9 @@ public class Player implements PlayerInterface {
         if (soldier instanceof Archer) {
             if (incrementCounter) return idCountersHolder.archerIDCounter++;
             else return idCountersHolder.archerIDCounter;
-        } else if (soldier instanceof Swordman) {
-            if (incrementCounter) return idCountersHolder.swordmanIDCounter++;
-            else return idCountersHolder.swordmanIDCounter;
+        } else if (soldier instanceof Swordsman) {
+            if (incrementCounter) return idCountersHolder.swordsmanIDCounter++;
+            else return idCountersHolder.swordsmanIDCounter;
         } else if (soldier instanceof Spearman) {
             if (incrementCounter) return idCountersHolder.spearmanIDCounter++;
             else return idCountersHolder.spearmanIDCounter;
@@ -328,7 +328,7 @@ public class Player implements PlayerInterface {
         public int towerIDCounter = 0;
         public int workerIDCounter = 0;
         public int archerIDCounter = 0;
-        public int swordmanIDCounter = 0;
+        public int swordsmanIDCounter = 0;
         public int spearmanIDCounter = 0;
         public int cavalryIDCounter = 0;
         public int catapultIDCounter = 0;

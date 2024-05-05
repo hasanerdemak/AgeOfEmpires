@@ -15,7 +15,7 @@ public class PurchaseSelectionDialog extends JDialog {
         ButtonGroup buttonGroup = new ButtonGroup();
         JPanel panel = new JPanel(new GridLayout(0, 1));
 
-        String[] itemNames = new String[]{"Worker", "Swordman", "Spearman", "Archer", "Cavalry", "Catapult"};
+        String[] itemNames = new String[]{"Worker", "Swordsman", "Spearman", "Archer", "Cavalry", "Catapult"};
         for (String itemName : itemNames) {
             JRadioButton radioButton = new JRadioButton(itemName);
             radioButton.addActionListener(new ActionListener() {

@@ -397,8 +397,8 @@ public class MapPanel extends JPanel {
             return new ImageIcon("images/worker.png");
         } else if (item.getClass().equals(Archer.class)) {
             return new ImageIcon("images/archer.png");
-        } else if (item.getClass().equals(Swordman.class)) {
-            return new ImageIcon("images/swordman.png");
+        } else if (item.getClass().equals(Swordsman.class)) {
+            return new ImageIcon("images/swordsman.png");
         } else if (item.getClass().equals(Spearman.class)) {
             return new ImageIcon("images/spearman.png");
         } else if (item.getClass().equals(Cavalry.class)) {

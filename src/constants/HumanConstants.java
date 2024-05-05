@@ -13,7 +13,7 @@ public class HumanConstants {
         public static final Resources COST = new Resources(0, 1, 0);
     }
 
-    public static class SwordmanConstants {
+    public static class SwordsmanConstants {
         public static final String SYMBOL = "K";
         public static final int LIFE_POINTS = 5;
         public static final int MOVEMENT_SPEED = 2;

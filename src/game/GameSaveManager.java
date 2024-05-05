@@ -30,7 +30,7 @@ public class GameSaveManager {
 
     private static PlayerData createPlayerData(Player player) {
         var idCountersHolder = player.getIdCountersHolder();
-        PlayerData playerData = new PlayerData(player.getPlayerID(), player.getWood(), player.getGold(), player.getStone(), idCountersHolder.towerIDCounter, idCountersHolder.workerIDCounter, idCountersHolder.archerIDCounter, idCountersHolder.swordmanIDCounter, idCountersHolder.spearmanIDCounter, idCountersHolder.cavalryIDCounter, idCountersHolder.catapultIDCounter);
+        PlayerData playerData = new PlayerData(player.getPlayerID(), player.getWood(), player.getGold(), player.getStone(), idCountersHolder.towerIDCounter, idCountersHolder.workerIDCounter, idCountersHolder.archerIDCounter, idCountersHolder.swordsmanIDCounter, idCountersHolder.spearmanIDCounter, idCountersHolder.cavalryIDCounter, idCountersHolder.catapultIDCounter);
 
         Building mainBuilding = player.getMainBuilding();
         ItemData mainBuildingData = createItemData(mainBuilding);
@@ -87,7 +87,7 @@ public class GameSaveManager {
             idCountersHolder.towerIDCounter = playerData.towerIDCounter;
             idCountersHolder.workerIDCounter = playerData.workerIDCounter;
             idCountersHolder.archerIDCounter = playerData.archerIDCounter;
-            idCountersHolder.swordmanIDCounter = playerData.swordmanIDCounter;
+            idCountersHolder.swordsmanIDCounter = playerData.swordsmanIDCounter;
             idCountersHolder.spearmanIDCounter = playerData.spearmanIDCounter;
             idCountersHolder.cavalryIDCounter = playerData.cavalryIDCounter;
             idCountersHolder.catapultIDCounter = playerData.catapultIDCounter;
@@ -120,10 +120,10 @@ public class GameSaveManager {
                         newPlayer.addSoldier(archer, false);
                         archer.setItemID(item.itemID);
                     }
-                    case "Swordman" -> {
-                        var swordman = new Swordman(newPlayer, item.x, item.y, item.lifePoints);
-                        newPlayer.addSoldier(swordman, false);
-                        swordman.setItemID(item.itemID);
+                    case "Swordsman" -> {
+                        var swordsman = new Swordsman(newPlayer, item.x, item.y, item.lifePoints);
+                        newPlayer.addSoldier(swordsman, false);
+                        swordsman.setItemID(item.itemID);
                     }
                     case "Spearman" -> {
                         var spearman = new Spearman(newPlayer, item.x, item.y, item.lifePoints);
@@ -195,7 +195,7 @@ public class GameSaveManager {
                 writer.println("towerIDCounter: " + playerData.towerIDCounter);
                 writer.println("workerIDCounter: " + playerData.workerIDCounter);
                 writer.println("archerIDCounter: " + playerData.archerIDCounter);
-                writer.println("swordmanIDCounter: " + playerData.swordmanIDCounter);
+                writer.println("swordsmanIDCounter: " + playerData.swordsmanIDCounter);
                 writer.println("spearmanIDCounter: " + playerData.spearmanIDCounter);
                 writer.println("cavalryIDCounter: " + playerData.cavalryIDCounter);
                 writer.println("catapultIDCounter: " + playerData.catapultIDCounter);
@@ -263,7 +263,7 @@ public class GameSaveManager {
                 playerData.towerIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
                 playerData.workerIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
                 playerData.archerIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
-                playerData.swordmanIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
+                playerData.swordsmanIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
                 playerData.spearmanIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
                 playerData.cavalryIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
                 playerData.catapultIDCounter = Integer.parseInt(scanner.nextLine().split(": ")[1]);
@@ -319,7 +319,7 @@ public class GameSaveManager {
         public int towerIDCounter;
         public int workerIDCounter;
         public int archerIDCounter;
-        public int swordmanIDCounter;
+        public int swordsmanIDCounter;
         public int spearmanIDCounter;
         public int cavalryIDCounter;
         public int catapultIDCounter;
@@ -336,13 +336,13 @@ public class GameSaveManager {
             this.towerIDCounter = 0;
             this.workerIDCounter = 0;
             this.archerIDCounter = 0;
-            this.swordmanIDCounter = 0;
+            this.swordsmanIDCounter = 0;
             this.spearmanIDCounter = 0;
             this.cavalryIDCounter = 0;
             this.catapultIDCounter = 0;
         }
 
-        public PlayerData(int playerID, int wood, int gold, int stone, int towerIDCounter, int workerIDCounter, int archerIDCounter, int swordmanIDCounter, int spearmanIDCounter, int cavalryIDCounter, int catapultIDCounter) {
+        public PlayerData(int playerID, int wood, int gold, int stone, int towerIDCounter, int workerIDCounter, int archerIDCounter, int swordsmanIDCounter, int spearmanIDCounter, int cavalryIDCounter, int catapultIDCounter) {
             this.playerID = playerID;
             this.wood = wood;
             this.gold = gold;
@@ -350,7 +350,7 @@ public class GameSaveManager {
             this.towerIDCounter = towerIDCounter;
             this.workerIDCounter = workerIDCounter;
             this.archerIDCounter = archerIDCounter;
-            this.swordmanIDCounter = swordmanIDCounter;
+            this.swordsmanIDCounter = swordsmanIDCounter;
             this.spearmanIDCounter = spearmanIDCounter;
             this.cavalryIDCounter = cavalryIDCounter;
             this.catapultIDCounter = catapultIDCounter;

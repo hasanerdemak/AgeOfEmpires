@@ -12,7 +12,7 @@ stone: 250
 towerIDCounter: 1
 workerIDCounter: 2
 archerIDCounter: 0
-swordmanIDCounter: 0
+swordsmanIDCounter: 0
 spearmanIDCounter: 0
 cavalryIDCounter: 0
 catapultIDCounter: 0
@@ -59,7 +59,7 @@ stone: 290
 towerIDCounter: 0
 workerIDCounter: 1
 archerIDCounter: 0
-swordmanIDCounter: 1
+swordsmanIDCounter: 1
 spearmanIDCounter: 0
 cavalryIDCounter: 0
 catapultIDCounter: 0
@@ -84,7 +84,7 @@ y: 50
 lifePoints: 2
 
 Item 3
-itemType: Swordman
+itemType: Swordsman
 itemID: 0
 x: 99
 y: 49
@@ -99,7 +99,7 @@ stone: 285
 towerIDCounter: 0
 workerIDCounter: 1
 archerIDCounter: 0
-swordmanIDCounter: 0
+swordsmanIDCounter: 0
 spearmanIDCounter: 0
 cavalryIDCounter: 1
 catapultIDCounter: 0

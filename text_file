@@ -12,7 +12,7 @@ stone: 105
 towerIDCounter: 0
 workerIDCounter: 1
 archerIDCounter: 0
-swordmanIDCounter: 0
+swordsmanIDCounter: 0
 spearmanIDCounter: 0
 cavalryIDCounter: 0
 catapultIDCounter: 0
@@ -52,7 +52,7 @@ stone: 110
 towerIDCounter: 0
 workerIDCounter: 1
 archerIDCounter: 0
-swordmanIDCounter: 0
+swordsmanIDCounter: 0
 spearmanIDCounter: 0
 cavalryIDCounter: 1
 catapultIDCounter: 0
